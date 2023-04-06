@@ -82,38 +82,38 @@ namespace GenshinWish.Service.WishService
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
             {
+                WishRecordBO record;
                 memberInfo.FullWpn80Surplus--;
                 memberInfo.FullWpn10Surplus--;
 
                 if (memberInfo.FullWpn80Surplus < 14 && RandomHelper.getRandomBetween(1, 100) < (14 - memberInfo.FullWpn80Surplus + 1) * 0.07 * 100)//低保
                 {
                     //武器池从第66抽开始,每抽出5星概率提高7%(基础概率),直到第80抽时概率上升到100%
-                    records[i] = GetRandomItem(Floor80List, upItem);
+                    record = GetRandomItem(Floor80List, upItem);
                 }
                 else if (memberInfo.FullWpn10Surplus % 10 == 0)
                 {
-                    //十连保底
-                    records[i] = GetRandomItem(SingleList, upItem);
+                    record = GetRandomItem(SingleList, upItem);//十连保底
                 }
                 else
                 {
-                    //无保底，无低保
-                    records[i] = GetRandomItem(Floor10List, upItem);
+                    record = GetRandomItem(Floor10List, upItem);//无保底，无低保
                 }
 
-                records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
-
-                if (records[i].GoodsItem.RareType == RareType.四星)
+                if (record.GoodsItem.RareType == RareType.四星)
                 {
-                    records[i].Cost = 10 - memberInfo.FullWpn10Surplus;
+                    record.Cost = 10 - memberInfo.FullWpn10Surplus;
                     memberInfo.FullWpn10Surplus = 10;//十连小保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星)
+                if (record.GoodsItem.RareType == RareType.五星)
                 {
-                    records[i].Cost = 80 - memberInfo.FullWpn80Surplus;
+                    record.Cost = 80 - memberInfo.FullWpn80Surplus;
                     memberInfo.FullWpn10Surplus = 10;//十连小保底重置
                     memberInfo.FullWpn80Surplus = 80;//八十发保底重置
                 }
+
+                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
+                records[i] = record;
             }
             return records;
         }

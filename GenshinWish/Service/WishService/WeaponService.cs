@@ -84,59 +84,61 @@ namespace GenshinWish.Service.WishService
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
             {
+                WishRecordBO record;
                 memberInfo.Wpn80Surplus--;
                 memberInfo.Wpn20Surplus--;
 
                 if (memberInfo.Wpn80Surplus < 14 && RandomHelper.getRandomBetween(1, 100) < (14 - memberInfo.Wpn80Surplus + 1) * 0.07 * 100)
                 {
                     //武器池从第66抽开始,每抽出5星概率提高7%(基础概率),直到第80抽时概率上升到100%
-                    records[i] = GetRandomItem(Floor80List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    record = GetRandomItem(Floor80List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
                 }
                 else if (memberInfo.Wpn20Surplus % 10 == 0)
                 {
-                    //十连保底
-                    records[i] = GetRandomItem(Floor10List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    record = GetRandomItem(Floor10List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);//十连保底
                 }
                 else
                 {
-                    //无保底，无低保
-                    records[i] = GetRandomItem(SingleList, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    record = GetRandomItem(SingleList, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);//无保底，无低保
                 }
 
-                bool isUpItem = IsUpItem(upItem, records[i].GoodsItem);//判断是否为本期up的物品
-                bool isAssignItem = assignGoodsItem != null && records[i].GoodsItem.GoodsID == assignGoodsItem.GoodsID;//判断是否为本期定轨物品
-                records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
-
-                if (records[i].GoodsItem.RareType == RareType.四星 && isUpItem == false)
+                bool isUpItem = IsUpItem(upItem, record.GoodsItem);//判断是否为本期up的物品
+                bool isAssignItem = assignGoodsItem != null && record.GoodsItem.GoodsID == assignGoodsItem.GoodsID;//判断是否为本期定轨物品
+                
+                if (record.GoodsItem.RareType == RareType.四星 && isUpItem == false)
                 {
-                    records[i].Cost = 10 - memberInfo.Wpn20Surplus % 10;
+                    record.Cost = 10 - memberInfo.Wpn20Surplus % 10;
                     memberInfo.Wpn20Surplus = 10;//十连保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.四星 && isUpItem == true)
+                if (record.GoodsItem.RareType == RareType.四星 && isUpItem == true)
                 {
-                    records[i].Cost = 10 - memberInfo.Wpn20Surplus % 10;
+                    record.Cost = 10 - memberInfo.Wpn20Surplus % 10;
                     memberInfo.Wpn20Surplus = 20;//十连保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星 && isAssignItem == false)
+                if (record.GoodsItem.RareType == RareType.五星 && isAssignItem == false)
                 {
-                    records[i].Cost = 80 - memberInfo.Wpn80Surplus;
+                    record.Cost = 80 - memberInfo.Wpn80Surplus;
                     if (assignGoodsItem != null) memberInfo.AssignValue++;//如果已经定轨，命定值+1
                     memberInfo.Wpn20Surplus = 20;//十连大保底重置
                     memberInfo.Wpn80Surplus = 80;//八十发保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星 && isAssignItem == true)
+                if (record.GoodsItem.RareType == RareType.五星 && isAssignItem == true)
                 {
-                    records[i].Cost = 80 - memberInfo.Wpn80Surplus;
+                    record.Cost = 80 - memberInfo.Wpn80Surplus;
                     if (assignGoodsItem != null) memberInfo.AssignValue = 0;//命定值重置
                     memberInfo.Wpn20Surplus = 20;//十连大保底重置
                     memberInfo.Wpn80Surplus = 80;//八十发保底重置
                 }
+
                 //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
                 if (assignGoodsItem == null || memberInfo.AssignValue > 2)
                 {
                     memberInfo.AssignId = 0;
                     memberInfo.AssignValue = 0;
                 }
+
+                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
+                records[i] = record;
             }
 
             return records;

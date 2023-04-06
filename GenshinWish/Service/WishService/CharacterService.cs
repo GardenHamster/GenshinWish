@@ -82,50 +82,51 @@ namespace GenshinWish.Service.WishService
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
             {
+                WishRecordBO record;
                 memberInfo.Char180Surplus--;
                 memberInfo.Char20Surplus--;
 
                 if (memberInfo.Char180Surplus % 90 < 16 && RandomHelper.getRandomBetween(1, 100) < (16 - memberInfo.Char180Surplus % 90 + 1) * 0.06 * 100)//低保
                 {
                     //角色池从第74抽开始,每抽出5星概率提高6%(基础概率),直到第90抽时概率上升到100%
-                    records[i] = GetRandomItem(Floor90List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);
+                    record = GetRandomItem(Floor90List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);
                 }
                 else if (memberInfo.Char20Surplus % 10 == 0)
                 {
-                    //十连保底
-                    records[i] = GetRandomItem(SingleList, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);
+                    record = GetRandomItem(SingleList, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//十连保底
                 }
                 else
                 {
-                    //无保底，无低保
-                    records[i] = GetRandomItem(Floor10List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);
+                    record = GetRandomItem(Floor10List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//无保底，无低保
                 }
                 
-                bool isUpItem = IsUpItem(upItem, records[i].GoodsItem);//判断是否为本期up的物品
-                records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
-
-                if (records[i].GoodsItem.RareType == RareType.四星 && isUpItem == false)
+                bool isUpItem = IsUpItem(upItem, record.GoodsItem);//判断是否为本期up的物品
+                
+                if (record.GoodsItem.RareType == RareType.四星 && isUpItem == false)
                 {
-                    records[i].Cost = 10 - memberInfo.Char20Surplus % 10;
+                    record.Cost = 10 - memberInfo.Char20Surplus % 10;
                     memberInfo.Char20Surplus = 10;//十连大保底重置为10
                 }
-                if (records[i].GoodsItem.RareType == RareType.四星 && isUpItem == true)
+                if (record.GoodsItem.RareType == RareType.四星 && isUpItem == true)
                 {
-                    records[i].Cost = 10 - memberInfo.Char20Surplus % 10;
+                    record.Cost = 10 - memberInfo.Char20Surplus % 10;
                     memberInfo.Char20Surplus = 20;//十连大保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星 && isUpItem == false)
+                if (record.GoodsItem.RareType == RareType.五星 && isUpItem == false)
                 {
-                    records[i].Cost = 90 - memberInfo.Char180Surplus % 90;
+                    record.Cost = 90 - memberInfo.Char180Surplus % 90;
                     memberInfo.Char20Surplus = 20;//十连大保底重置
                     memberInfo.Char180Surplus = 90;//九十发大保底重置为90
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星 && isUpItem == true)
+                if (record.GoodsItem.RareType == RareType.五星 && isUpItem == true)
                 {
-                    records[i].Cost = 90 - memberInfo.Char180Surplus % 90;
+                    record.Cost = 90 - memberInfo.Char180Surplus % 90;
                     memberInfo.Char20Surplus = 20;//十连大保底重置
                     memberInfo.Char180Surplus = 180;//九十发大保底重置
                 }
+
+                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
+                records[i] = record;
             }
             return records;
         }

@@ -82,38 +82,38 @@ namespace GenshinWish.Service.WishService
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
             {
+                WishRecordBO record;
                 memberInfo.Std90Surplus--;
                 memberInfo.Std10Surplus--;
 
                 if (memberInfo.Std90Surplus < 16 && RandomHelper.getRandomBetween(1, 100) < (16 - memberInfo.Std90Surplus + 1) * 0.06 * 100)//低保
                 {
                     //常驻池从第74抽开始,每抽出5星概率提高6%(基础概率),直到第90抽时概率上升到100%
-                    records[i] = GetRandomItem(Floor90List, upItem);
+                    record = GetRandomItem(Floor90List, upItem);
                 }
                 else if (memberInfo.Std10Surplus % 10 == 0)
                 {
-                    //十连保底
-                    records[i] = GetRandomItem(SingleList, upItem);
+                    record = GetRandomItem(SingleList, upItem);//十连保底
                 }
                 else
                 {
-                    //无保底，无低保
-                    records[i] = GetRandomItem(Floor10List, upItem);
+                    record = GetRandomItem(Floor10List, upItem);//无保底，无低保
                 }
 
-                records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
-
-                if (records[i].GoodsItem.RareType == RareType.四星)
+                if (record.GoodsItem.RareType == RareType.四星)
                 {
-                    records[i].Cost = 10 - memberInfo.Std10Surplus;
+                    record.Cost = 10 - memberInfo.Std10Surplus;
                     memberInfo.Std10Surplus = 10;//十连保底重置
                 }
-                if (records[i].GoodsItem.RareType == RareType.五星)
+                if (record.GoodsItem.RareType == RareType.五星)
                 {
-                    records[i].Cost = 90 - memberInfo.Std90Surplus;
+                    record.Cost = 90 - memberInfo.Std90Surplus;
                     memberInfo.Std10Surplus = 10;//十连保底重置
                     memberInfo.Std90Surplus = 90;//九十发保底重置
                 }
+
+                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
+                records[i] = record;
             }
             return records;
         }
