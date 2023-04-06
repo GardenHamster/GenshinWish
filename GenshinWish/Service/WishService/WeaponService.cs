@@ -3,10 +3,12 @@ using GenshinWish.Exceptions;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
+using GenshinWish.Models.VO;
 using GenshinWish.Type;
 using GenshinWish.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GenshinWish.Service.WishService
 {
@@ -56,20 +58,17 @@ namespace GenshinWish.Service.WishService
         /// <param name="authorize"></param>
         /// <param name="memberInfo"></param>
         /// <param name="upItem"></param>
-        /// <param name="assignGoodsItem"></param>
         /// <param name="memberGoods"></param>
         /// <param name="wishCount"></param>
         /// <returns></returns>
-        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
-            //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
-            if (assignGoodsItem == null || memberInfo.AssignValue > 2)
-            {
-                memberInfo.AssignId = 0;
-                memberInfo.AssignValue = 0;
-            }
-            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, assignGoodsItem, memberGoods, wishCount);
-            WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            var assignItem = GetAssignItem(memberInfo, upItem);
+            CheckAssign(memberInfo, assignItem);
+            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, assignItem, memberGoods, wishCount);
+            WishRecordBO[] filterRecords = FilterRecords(wishRecords);
+            WishRecordBO[] sortRecords = SortRecords(filterRecords);
+            CheckAssign(memberInfo, assignItem);
             WishResultBO wishResult = new WishResultBO();
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;
@@ -77,6 +76,42 @@ namespace GenshinWish.Service.WishService
             wishResult.SortWishRecords = sortRecords;
             wishResult.PoolIndex = upItem.PoolIndex;
             return wishResult;
+        }
+
+        /// <summary>
+        /// 获取定轨内容，未定轨则返回null
+        /// </summary>
+        /// <param name="memberInfo"></param>
+        /// <param name="upItem"></param>
+        /// <returns></returns>
+        protected GoodsItemBO GetAssignItem(MemberPO memberInfo, UpItemBO upItem)
+        {
+            var star5UpItems = upItem.Star5UpItems;
+            if (memberInfo.AssignId <= 0) return null;
+            if (star5UpItems.Where(o => o.GoodsID == memberInfo.AssignId).Any() == false) return null;
+            GoodsPO goods = goodsDao.GetById(memberInfo.AssignId);
+            if (goods == null) return null;
+            return new GoodsItemBO(goods);
+        }
+
+        /// <summary>
+        /// 当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
+        /// </summary>
+        /// <param name="memberInfo"></param>
+        /// <param name="assignItem"></param>
+        /// <returns></returns>
+        protected MemberPO CheckAssign(MemberPO memberInfo, GoodsItemBO assignItem)
+        {
+            if (assignItem == null)
+            {
+                memberInfo.AssignId = 0;
+                memberInfo.AssignValue = 0;
+            }
+            if (memberInfo.AssignValue > 2)
+            {
+                memberInfo.AssignValue = 0;
+            }
+            return memberInfo;
         }
 
         /// <summary>

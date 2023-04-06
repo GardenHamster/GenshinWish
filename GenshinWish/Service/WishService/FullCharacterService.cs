@@ -62,7 +62,8 @@ namespace GenshinWish.Service.WishService
         public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, memberGoods, wishCount);
-            WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            WishRecordBO[] filterRecords = FilterRecords(wishRecords);
+            WishRecordBO[] sortRecords = SortRecords(filterRecords);
             WishResultBO wishResult = new WishResultBO();
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;

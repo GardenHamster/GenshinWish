@@ -62,7 +62,8 @@ namespace GenshinWish.Service.WishService
         public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, memberGoods, wishCount);
-            WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            WishRecordBO[] filterRecords = FilterRecords(wishRecords);
+            WishRecordBO[] sortRecords = SortRecords(filterRecords);
             WishResultBO wishResult = new WishResultBO();
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;
@@ -134,24 +135,24 @@ namespace GenshinWish.Service.WishService
             return records;
         }
 
-        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO ySUpItem, int floor180Surplus, int floor20Surplus)
+        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO upItem, int floor180Surplus, int floor20Surplus)
         {
             ProbabilityBO ysProbability = GetRandomInList(probabilities);
             if (ysProbability.ProbabilityType == ProbabilityType.五星物品)
             {
                 //当祈愿获取到5星角色时，有50.000%的概率为本期5星UP角色
                 bool isGetUp = floor180Surplus < 90 ? true : RandomHelper.getRandomBetween(1, 100) <= 50;
-                return isGetUp ? GetRandomInList(ySUpItem.Star5UpItems) : GetRandomInList(ySUpItem.Star5FixItems);
+                return isGetUp ? GetRandomInList(upItem.Star5UpItems) : GetRandomInList(upItem.Star5FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.四星物品)
             {
                 //当祈愿获取到4星物品时，有50.000%的概率为本期4星UP角色
                 bool isGetUp = floor20Surplus < 10 ? true : RandomHelper.getRandomBetween(1, 100) <= 50;
-                return isGetUp ? GetRandomInList(ySUpItem.Star4UpItems) : GetRandomInList(ySUpItem.Star4FixItems);
+                return isGetUp ? GetRandomInList(upItem.Star4UpItems) : GetRandomInList(upItem.Star4FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.三星物品)
             {
-                return GetRandomInList(ySUpItem.Star3FullItems);
+                return GetRandomInList(upItem.Star3FullItems);
             }
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }

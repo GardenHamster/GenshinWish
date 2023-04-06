@@ -15,7 +15,7 @@ namespace GenshinWish.Controllers
 
         protected void CheckImgWidth(int imgWidth)
         {
-            if (imgWidth < 500 || imgWidth > 1920) throw new ParamException("图片宽度只能设定在500~1920之间");
+            if (imgWidth < 0 || imgWidth > 1920) throw new ParamException("图片宽度只能设定在0~1920之间");
         }
 
 

@@ -34,13 +34,13 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 创建结果集
         /// </summary>
-        /// <param name="ySUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="wishResult"></param>
         /// <param name="authorize"></param>
         /// <param name="toBase64"></param>
         /// <param name="imgWidth"></param>
         /// <returns></returns>
-        protected ApiWishResult CreateWishResult(UpItemBO ySUpItem, WishResultBO wishResult, AuthorizeDto authorize, bool toBase64, int imgWidth)
+        protected ApiWishResult CreateWishResult(UpItemBO upItem, WishResultBO wishResult, AuthorizeDto authorize, bool toBase64, int imgWidth)
         {
             ApiWishResult apiResult = new ApiWishResult();
             apiResult.WishCount = wishResult.WishRecords.Count();
@@ -55,8 +55,8 @@ namespace GenshinWish.Controllers
             apiResult.Star5Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray());
             apiResult.Star4Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray());
             apiResult.Star3Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray());
-            apiResult.Star5Up = ChangeToGoodsVO(ySUpItem.Star5UpItems);
-            apiResult.Star4Up = ChangeToGoodsVO(ySUpItem.Star4UpItems);
+            apiResult.Star5Up = ChangeToGoodsVO(upItem.Star5UpItems);
+            apiResult.Star4Up = ChangeToGoodsVO(upItem.Star4UpItems);
 
             bool withSkin = authorize.Authorize.SkinRate > 0 && RandomHelper.getRandomBetween(1, 100) <= authorize.Authorize.SkinRate;
             using Bitmap wishImage = CreateWishImg(wishResult.SortWishRecords, withSkin, wishResult.MemberInfo.MemberCode);

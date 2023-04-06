@@ -22,6 +22,20 @@ namespace GenshinWish.Service.WishService
         }
 
         /// <summary>
+        /// 返回前10条无重复的结果，5星记录除外
+        /// </summary>
+        /// <param name="records"></param>
+        /// <returns></returns>
+        public WishRecordBO[] FilterRecords(WishRecordBO[] records)
+        {
+            if (records.Length <= 10) return records;
+            var star5Records = records.Where(o => o.GoodsItem.RareType == RareType.五星).ToList();
+            var star4Records = records.Where(o => o.GoodsItem.RareType == RareType.四星).GroupBy(o => o.GoodsItem.GoodsID).Select(o => o.First()).ToList();
+            var star3Records = records.Where(o => o.GoodsItem.RareType == RareType.三星).Take(10);
+            return star5Records.Concat(star4Records).Concat(star3Records).Take(10).ToArray();
+        }
+
+        /// <summary>
         /// 从物品列表中随机出一个物品
         /// </summary>
         /// <param name="probabilityList"></param>
@@ -80,13 +94,13 @@ namespace GenshinWish.Service.WishService
         /// <summary>
         /// 判断一个项目是否up项目
         /// </summary> 
-        /// <param name="ySUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="goodsItem"></param>
         /// <returns></returns>
-        protected bool IsUpItem(UpItemBO ySUpItem, GoodsItemBO goodsItem)
+        protected bool IsUpItem(UpItemBO upItem, GoodsItemBO goodsItem)
         {
-            if (ySUpItem.Star5UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
-            if (ySUpItem.Star4UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
+            if (upItem.Star5UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
+            if (upItem.Star4UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
             return false;
         }
 

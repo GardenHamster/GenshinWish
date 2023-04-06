@@ -20,18 +20,6 @@ namespace GenshinWish.Service
         }
 
         /// <summary>
-        /// 根据Id获取YSGoodsItem
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public GoodsItemBO GetGoodsItemById(int id)
-        {
-            GoodsPO goods = goodsDao.GetById(id);
-            if (goods == null) return null;
-            return new GoodsItemBO(goods);
-        }
-
-        /// <summary>
         /// 根据物品id获取GoodsPO
         /// </summary>
         /// <param name="id"></param>
@@ -72,24 +60,14 @@ namespace GenshinWish.Service
             DefaultPool.Star5CharacterItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.五星));//五星常驻角色
             DefaultPool.Star5FullItems = ConcatList(DefaultPool.Star5CharacterItems, DefaultPool.Star5WeaponItems);
             DefaultPool.Star4FullItems = ConcatList(DefaultPool.Star4CharacterItems, DefaultPool.Star4WeaponItems);
-
-            //加载默认常驻池
-            DefaultPool.StandardPool = LoadPermItem();
-
-            //加载默认角色池
-            DefaultPool.CharacterPools = LoadCharacterPool(0);
-
-            //加载默认武器池
-            DefaultPool.WeaponPools = LoadWeaponPool(0);
-
-            //加载全角色池
-            DefaultPool.FullCharacterPool = LoadFullCharItem();
-
-            //加载全武器池
-            DefaultPool.FullWeaponPool = LoadFullWpnItem();
+            DefaultPool.StandardPool = LoadStandardPool();//加载常驻池
+            DefaultPool.CharacterPools = LoadCharacterPool(0);//加载默认角色池
+            DefaultPool.WeaponPools = LoadWeaponPool(0);//加载默认武器池
+            DefaultPool.FullCharacterPool = LoadFullCharItem();//加载全角色池
+            DefaultPool.FullWeaponPool = LoadFullWpnItem();//加载全武器池
         }
 
-        public UpItemBO LoadPermItem()
+        public UpItemBO LoadStandardPool()
         {
             UpItemBO upItem = new UpItemBO();
             upItem.Star5UpItems = DefaultPool.Star5FullItems;
@@ -245,15 +223,15 @@ namespace GenshinWish.Service
         /// <summary>
         /// 根据id返回定轨物品，如果当前UP池中不包含该武器，返回null
         /// </summary>
-        /// <param name="ySUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="assignId"></param>
         /// <returns></returns>
-        public GoodsItemBO getAssignItem(UpItemBO ySUpItem, int assignId)
+        public GoodsItemBO getAssignItem(UpItemBO upItem, int assignId)
         {
             if (assignId == 0) return null;
             GoodsPO goods = goodsDao.GetById(assignId);
             if (goods is null) return null;
-            if (ySUpItem.Star5UpItems.Where(o => o.GoodsID == assignId).Any() == false) return null;
+            if (upItem.Star5UpItems.Where(o => o.GoodsID == assignId).Any() == false) return null;
             return new GoodsItemBO(goods);
         }
 

@@ -62,7 +62,8 @@ namespace GenshinWish.Service.WishService
         public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, memberGoods, wishCount);
-            WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            WishRecordBO[] filterRecords = FilterRecords(wishRecords);
+            WishRecordBO[] sortRecords = SortRecords(filterRecords);
             WishResultBO wishResult = new WishResultBO();
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;
@@ -121,12 +122,12 @@ namespace GenshinWish.Service.WishService
             return records;
         }
 
-        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO ySUpItem)
+        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO upItem)
         {
             ProbabilityBO ysProbability = GetRandomInList(probabilities);
-            if (ysProbability.ProbabilityType == ProbabilityType.五星物品) return GetRandomInList(ySUpItem.Star5FullItems);
-            if (ysProbability.ProbabilityType == ProbabilityType.四星物品) return GetRandomInList(ySUpItem.Star4FullItems);
-            if (ysProbability.ProbabilityType == ProbabilityType.三星物品) return GetRandomInList(ySUpItem.Star3FullItems);
+            if (ysProbability.ProbabilityType == ProbabilityType.五星物品) return GetRandomInList(upItem.Star5FullItems);
+            if (ysProbability.ProbabilityType == ProbabilityType.四星物品) return GetRandomInList(upItem.Star4FullItems);
+            if (ysProbability.ProbabilityType == ProbabilityType.三星物品) return GetRandomInList(upItem.Star3FullItems);
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }
 
