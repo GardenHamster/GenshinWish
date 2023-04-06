@@ -47,16 +47,37 @@ namespace GenshinWish.Service.WishService
             new ProbabilityBO(99.4m,ProbabilityType.四星物品)
         };
 
+        /// <summary>
+        /// 获取祈愿结果
+        /// </summary>
+        /// <param name="authorize"></param>
+        /// <param name="memberInfo"></param>
+        /// <param name="upItem"></param>
+        /// <param name="memberGoods"></param>
+        /// <param name="wishCount"></param>
+        /// <returns></returns>
+        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        {
+            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, memberGoods, wishCount);
+            WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            WishResultBO wishResult = new WishResultBO();
+            wishResult.MemberInfo = memberInfo;
+            wishResult.Authorize = authorize;
+            wishResult.WishRecords = wishRecords;
+            wishResult.SortWishRecords = sortRecords;
+            wishResult.PoolIndex = upItem.PoolIndex;
+            return wishResult;
+        }
 
         /// <summary>
-        /// 模拟抽卡,获取祈愿记录
+        /// 获取祈愿记录
         /// </summary>
         /// <param name="memberInfo"></param>
-        /// <param name="ySUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="memberGoods"></param>
         /// <param name="wishCount">抽卡次数</param>
         /// <returns></returns>
-        public virtual WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO ySUpItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        public virtual WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
@@ -64,18 +85,20 @@ namespace GenshinWish.Service.WishService
                 memberInfo.Std90Surplus--;
                 memberInfo.Std10Surplus--;
 
-                if (memberInfo.Std10Surplus > 0)//无保底
-                {
-                    records[i] = GetRandomItem(SingleList, ySUpItem);
-                }
-                if (memberInfo.Std10Surplus <= 0)//十连保底
-                {
-                    records[i] = GetRandomItem(Floor10List, ySUpItem);
-                }
-                //常驻池从第74抽开始,每抽出5星概率提高6%(基础概率),直到第90抽时概率上升到100%
                 if (memberInfo.Std90Surplus < 16 && RandomHelper.getRandomBetween(1, 100) < (16 - memberInfo.Std90Surplus + 1) * 0.06 * 100)//低保
                 {
-                    records[i] = GetRandomItem(Floor90List, ySUpItem);
+                    //常驻池从第74抽开始,每抽出5星概率提高6%(基础概率),直到第90抽时概率上升到100%
+                    records[i] = GetRandomItem(Floor90List, upItem);
+                }
+                else if (memberInfo.Std10Surplus % 10 == 0)
+                {
+                    //十连保底
+                    records[i] = GetRandomItem(SingleList, upItem);
+                }
+                else
+                {
+                    //无保底，无低保
+                    records[i] = GetRandomItem(Floor10List, upItem);
                 }
 
                 records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
@@ -95,40 +118,13 @@ namespace GenshinWish.Service.WishService
             return records;
         }
 
-
         protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO ySUpItem)
         {
             ProbabilityBO ysProbability = GetRandomInList(probabilities);
-            if (ysProbability.ProbabilityType == ProbabilityType.五星物品)
-            {
-                return GetRandomInList(ySUpItem.Star5AllList);
-            }
-            if (ysProbability.ProbabilityType == ProbabilityType.四星物品)
-            {
-                return GetRandomInList(ySUpItem.Star4AllList);
-            }
-            if (ysProbability.ProbabilityType == ProbabilityType.三星物品)
-            {
-                return GetRandomInList(ySUpItem.Star3AllList);
-            }
+            if (ysProbability.ProbabilityType == ProbabilityType.五星物品) return GetRandomInList(ySUpItem.Star5AllList);
+            if (ysProbability.ProbabilityType == ProbabilityType.四星物品) return GetRandomInList(ySUpItem.Star4AllList);
+            if (ysProbability.ProbabilityType == ProbabilityType.三星物品) return GetRandomInList(ySUpItem.Star3AllList);
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
-        }
-
-        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO ysUpItem, List<MemberGoodsDto> memberGoods, int wishCount)
-        {
-            WishResultBO wishResult = new WishResultBO();
-            int perm90SurplusBefore = memberInfo.Std90Surplus;
-
-            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, ysUpItem, memberGoods, wishCount);
-            WishRecordBO[] sortRecords = SortRecords(wishRecords);
-
-            wishResult.MemberInfo = memberInfo;
-            wishResult.Authorize = authorize;
-            wishResult.WishRecords = wishRecords;
-            wishResult.SortWishRecords = sortRecords;
-            wishResult.Star5Cost = GetStar5Cost(wishRecords, perm90SurplusBefore, 90);
-            wishResult.Surplus10 = memberInfo.Std10Surplus;
-            return wishResult;
         }
 
     }

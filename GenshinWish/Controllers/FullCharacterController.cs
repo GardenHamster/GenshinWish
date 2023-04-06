@@ -20,10 +20,22 @@ namespace GenshinWish.Controllers
     [Route("api/[controller]/[action]")]
     public class FullCharacterController : BaseWishController<FullCharacterService>
     {
-        public FullCharacterController(FullCharacterService fullCharacterService, AuthorizeService authorizeService, MemberService memberService,
-            GoodsService goodsService, WishRecordService wishRecordService, MemberGoodsService memberGoodsService)
-            : base(fullCharacterService, authorizeService, memberService, goodsService, wishRecordService, memberGoodsService)
+        protected AuthorizeService authorizeService;
+        protected MemberService memberService;
+        protected GoodsService goodsService;
+        protected WishRecordService wishRecordService;
+        protected ReceiveRecordService receiveRecordService;
+        protected MemberGoodsService memberGoodsService;
+
+        public FullCharacterController(FullCharacterService fullCharacterService, AuthorizeService authorizeService, MemberService memberService, GoodsService goodsService,
+            WishRecordService wishRecordService, ReceiveRecordService receiveRecordService, MemberGoodsService memberGoodsService) : base(fullCharacterService)
         {
+            this.authorizeService = authorizeService;
+            this.memberService = memberService;
+            this.goodsService = goodsService;
+            this.wishRecordService = wishRecordService;
+            this.receiveRecordService = receiveRecordService;
+            this.memberGoodsService = memberGoodsService;
         }
 
         /// <summary>

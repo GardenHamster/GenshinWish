@@ -15,5 +15,7 @@ namespace GenshinWish.Models.VO
 
         public string RareType { get; set; }
 
+        public int Cost { get; set; }
+
     }
 }

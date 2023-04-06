@@ -28,5 +28,6 @@ namespace GenshinWish.Models.PO
 
         [SugarColumn(IsNullable = false, ColumnDescription = "添加日期")]
         public DateTime CreateDate { get; set; }
+
     }
 }

@@ -21,10 +21,22 @@ namespace GenshinWish.Controllers
     [Route("api/[controller]/[action]")]
     public class WeaponController : BaseWishController<WeaponService>
     {
-        public WeaponController(WeaponService weaponService, AuthorizeService authorizeService, MemberService memberService,
-            GoodsService goodsService, WishRecordService wishRecordService, MemberGoodsService memberGoodsService)
-            : base(weaponService, authorizeService, memberService, goodsService, wishRecordService, memberGoodsService)
+        protected AuthorizeService authorizeService;
+        protected MemberService memberService;
+        protected GoodsService goodsService;
+        protected WishRecordService wishRecordService;
+        protected ReceiveRecordService receiveRecordService;
+        protected MemberGoodsService memberGoodsService;
+
+        public WeaponController(WeaponService weaponService, AuthorizeService authorizeService, MemberService memberService, GoodsService goodsService,
+             WishRecordService wishRecordService, ReceiveRecordService receiveRecordService, MemberGoodsService memberGoodsService) : base(weaponService)
         {
+            this.authorizeService = authorizeService;
+            this.memberService = memberService;
+            this.goodsService = goodsService;
+            this.wishRecordService = wishRecordService;
+            this.receiveRecordService = receiveRecordService;
+            this.memberGoodsService = memberGoodsService;
         }
 
         /// <summary>
@@ -63,7 +75,8 @@ namespace GenshinWish.Controllers
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, assignGoodsItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
                     wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加调用记录
-                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//添加成员出货记录
+                    receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
+                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
@@ -119,8 +132,9 @@ namespace GenshinWish.Controllers
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, assignGoodsItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加调用记录
-                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//添加成员出货记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加祈愿记录
+                    receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
+                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 

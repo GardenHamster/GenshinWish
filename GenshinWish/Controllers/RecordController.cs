@@ -19,7 +19,7 @@ namespace GenshinWish.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class WishDetailController : BaseController
+    public class RecordController : BaseController
     {
         protected AuthorizeService authorizeService;
         protected MemberService memberService;
@@ -28,7 +28,7 @@ namespace GenshinWish.Controllers
         protected WishRecordService wishRecordService;
         protected ReceiveRecordService receiveRecordService;
 
-        public WishDetailController(AuthorizeService authorizeService, MemberService memberService, GoodsService goodsService,
+        public RecordController(AuthorizeService authorizeService, MemberService memberService, GoodsService goodsService,
             MemberGoodsService memberGoodsService, WishRecordService wishRecordService, ReceiveRecordService receiveRecordService)
         {
             this.authorizeService = authorizeService;
@@ -167,7 +167,7 @@ namespace GenshinWish.Controllers
                 int top = 20;
                 int days = 7;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                LuckRankingVO luckRankingVO = receiveRecordService.getLuckRanking(authorizePO.Id, days, top);
+                LuckRankingVO luckRankingVO = receiveRecordService.GetLuckRanking(authorizePO.Id, days, top);
                 return ApiResult.Success(luckRankingVO);
             }
             catch (BaseException ex)
@@ -198,8 +198,8 @@ namespace GenshinWish.Controllers
                 AuthorizePO authorizePO = authorizeDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null) return ApiResult.Success();
-                var star5Records = receiveRecordService.getRecords(memberInfo.Id, RareType.五星, 20);
-                var star4Records = receiveRecordService.getRecords(memberInfo.Id, RareType.四星, 20);
+                var star5Records = receiveRecordService.GetRecords(memberInfo.Id, RareType.五星, 20);
+                var star4Records = receiveRecordService.GetRecords(memberInfo.Id, RareType.四星, 20);
                 return ApiResult.Success(new
                 {
                     star5 = ChangeToWishRecordVO(star5Records),

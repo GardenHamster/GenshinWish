@@ -21,10 +21,22 @@ namespace GenshinWish.Controllers
     [Route("api/[controller]/[action]")]
     public class FullWeaponController : BaseWishController<FullWeaponService>
     {
-        public FullWeaponController(FullWeaponService fullWeaponService, AuthorizeService authorizeService, MemberService memberService,
-            GoodsService goodsService, WishRecordService wishRecordService, MemberGoodsService memberGoodsService)
-            : base(fullWeaponService, authorizeService, memberService, goodsService, wishRecordService, memberGoodsService)
+        protected AuthorizeService authorizeService;
+        protected MemberService memberService;
+        protected GoodsService goodsService;
+        protected WishRecordService wishRecordService;
+        protected ReceiveRecordService receiveRecordService;
+        protected MemberGoodsService memberGoodsService;
+
+        public FullWeaponController(FullWeaponService fullWeaponService, AuthorizeService authorizeService, MemberService memberService, GoodsService goodsService,
+             WishRecordService wishRecordService, ReceiveRecordService receiveRecordService, MemberGoodsService memberGoodsService) : base(fullWeaponService)
         {
+            this.authorizeService = authorizeService;
+            this.memberService = memberService;
+            this.goodsService = goodsService;
+            this.wishRecordService = wishRecordService;
+            this.receiveRecordService = receiveRecordService;
+            this.memberGoodsService = memberGoodsService;
         }
 
         /// <summary>

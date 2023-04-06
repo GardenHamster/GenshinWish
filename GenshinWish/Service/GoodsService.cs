@@ -99,6 +99,7 @@ namespace GenshinWish.Service
             upItem.Star5AllList = DataCache.Star5PermList;
             upItem.Star4AllList = DataCache.Star4PermList;
             upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.PoolIndex = 0;
             return upItem;
         }
 
@@ -115,15 +116,16 @@ namespace GenshinWish.Service
                 List<GoodsItemBO> roleStar4NonUpList = GetNonUpList(DataCache.Star4PermList, roleStar4UpList);
                 List<GoodsItemBO> roleStar5AllList = ConcatList(DataCache.RoleStar5PermList, roleStar5UpList);
                 List<GoodsItemBO> roleStar4AllList = ConcatList(DataCache.RoleStar4PermList, DataCache.ArmStar4PermList, roleStar4UpList);
-                UpItemBO roleUpItem = new UpItemBO();
-                roleUpItem.Star5UpList = roleStar5UpList;
-                roleUpItem.Star4UpList = roleStar4UpList;
-                roleUpItem.Star5NonUpList = roleStar5NonUpList;
-                roleUpItem.Star4NonUpList = roleStar4NonUpList;
-                roleUpItem.Star5AllList = roleStar5AllList;
-                roleUpItem.Star4AllList = roleStar4AllList;
-                roleUpItem.Star3AllList = DataCache.ArmStar3PermList;
-                upItemDic[poolIndex] = roleUpItem;
+                UpItemBO upItem = new UpItemBO();
+                upItem.Star5UpList = roleStar5UpList;
+                upItem.Star4UpList = roleStar4UpList;
+                upItem.Star5NonUpList = roleStar5NonUpList;
+                upItem.Star4NonUpList = roleStar4NonUpList;
+                upItem.Star5AllList = roleStar5AllList;
+                upItem.Star4AllList = roleStar4AllList;
+                upItem.Star3AllList = DataCache.ArmStar3PermList;
+                upItem.PoolIndex = poolIndex;
+                upItemDic[poolIndex] = upItem;
             }
             return upItemDic;
         }
@@ -141,15 +143,16 @@ namespace GenshinWish.Service
                 List<GoodsItemBO> armStar4NonUpList = GetNonUpList(DataCache.ArmStar4PermList, armStar4UpList);
                 List<GoodsItemBO> armStar5AllList = ConcatList(DataCache.ArmStar5PermList, armStar5UpList);
                 List<GoodsItemBO> armStar4AllList = ConcatList(DataCache.ArmStar4PermList, armStar4UpList);
-                UpItemBO armUpItem = new UpItemBO();
-                armUpItem.Star5UpList = armStar5UpList;
-                armUpItem.Star4UpList = armStar4UpList;
-                armUpItem.Star5NonUpList = armStar5NonUpList;
-                armUpItem.Star4NonUpList = armStar4NonUpList;
-                armUpItem.Star5AllList = armStar5AllList;
-                armUpItem.Star4AllList = armStar4AllList;
-                armUpItem.Star3AllList = DataCache.ArmStar3PermList;
-                upItemDic[poolIndex] = armUpItem;
+                UpItemBO upItem = new UpItemBO();
+                upItem.Star5UpList = armStar5UpList;
+                upItem.Star4UpList = armStar4UpList;
+                upItem.Star5NonUpList = armStar5NonUpList;
+                upItem.Star4NonUpList = armStar4NonUpList;
+                upItem.Star5AllList = armStar5AllList;
+                upItem.Star4AllList = armStar4AllList;
+                upItem.Star3AllList = DataCache.ArmStar3PermList;
+                upItem.PoolIndex = poolIndex;
+                upItemDic[poolIndex] = upItem;
             }
             return upItemDic;
         }
@@ -163,15 +166,16 @@ namespace GenshinWish.Service
             List<GoodsItemBO> roleStar4NonUpList = new List<GoodsItemBO>();
             List<GoodsItemBO> roleStar5AllList = roleStar5UpList;
             List<GoodsItemBO> roleStar4AllList = ConcatList(DataCache.ArmStar4PermList, roleStar4UpList);
-            UpItemBO roleUpItem = new UpItemBO();
-            roleUpItem.Star5UpList = roleStar5UpList;
-            roleUpItem.Star4UpList = roleStar4UpList;
-            roleUpItem.Star5NonUpList = roleStar5NonUpList;
-            roleUpItem.Star4NonUpList = roleStar4NonUpList;
-            roleUpItem.Star5AllList = roleStar5AllList;
-            roleUpItem.Star4AllList = roleStar4AllList;
-            roleUpItem.Star3AllList = DataCache.ArmStar3PermList;
-            return roleUpItem;
+            UpItemBO upItem = new UpItemBO();
+            upItem.Star5UpList = roleStar5UpList;
+            upItem.Star4UpList = roleStar4UpList;
+            upItem.Star5NonUpList = roleStar5NonUpList;
+            upItem.Star4NonUpList = roleStar4NonUpList;
+            upItem.Star5AllList = roleStar5AllList;
+            upItem.Star4AllList = roleStar4AllList;
+            upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.PoolIndex = 0;
+            return upItem;
         }
 
         public UpItemBO LoadFullArmItem()
@@ -183,15 +187,16 @@ namespace GenshinWish.Service
             List<GoodsItemBO> armStar4NonUpList = new List<GoodsItemBO>();
             List<GoodsItemBO> armStar5AllList = armStar5UpList;
             List<GoodsItemBO> armStar4AllList = armStar4UpList;
-            UpItemBO armUpItem = new UpItemBO();
-            armUpItem.Star5UpList = armStar5UpList;
-            armUpItem.Star4UpList = armStar4UpList;
-            armUpItem.Star5NonUpList = armStar5NonUpList;
-            armUpItem.Star4NonUpList = armStar4NonUpList;
-            armUpItem.Star5AllList = armStar5AllList;
-            armUpItem.Star4AllList = armStar4AllList;
-            armUpItem.Star3AllList = DataCache.ArmStar3PermList;
-            return armUpItem;
+            UpItemBO upItem = new UpItemBO();
+            upItem.Star5UpList = armStar5UpList;
+            upItem.Star4UpList = armStar4UpList;
+            upItem.Star5NonUpList = armStar5NonUpList;
+            upItem.Star4NonUpList = armStar4NonUpList;
+            upItem.Star5AllList = armStar5AllList;
+            upItem.Star4AllList = armStar4AllList;
+            upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.PoolIndex = 0;
+            return upItem;
         }
 
         /// <summary>

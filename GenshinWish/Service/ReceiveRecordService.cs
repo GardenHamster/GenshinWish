@@ -1,6 +1,8 @@
 ﻿using GenshinWish.Common;
 using GenshinWish.Dao;
+using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
+using GenshinWish.Models.PO;
 using GenshinWish.Models.VO;
 using GenshinWish.Type;
 using System;
@@ -41,7 +43,7 @@ namespace GenshinWish.Service
             return wishDetail;
         }
 
-        public LuckRankingVO getLuckRanking(int authId, int days, int top)
+        public LuckRankingVO GetLuckRanking(int authId, int days, int top)
         {
             LuckRankingVO luckRankingCache = DataCache.GetLuckRankingCache(authId);
             if (luckRankingCache != null) return luckRankingCache;
@@ -54,13 +56,14 @@ namespace GenshinWish.Service
             luckRanking.CountDay = days;
             luckRanking.StartDate = startDate;
             luckRanking.EndDate = endDate;
-            luckRanking.Star5Ranking = star5RankingList.Select(m => toRareRanking(m)).ToList();
-            luckRanking.Star4Ranking = star4RankingList.Select(m => toRareRanking(m)).ToList();
+            luckRanking.Star5Ranking = star5RankingList.Select(m => ToRareRanking(m)).ToList();
+            luckRanking.Star4Ranking = star4RankingList.Select(m => ToRareRanking(m)).ToList();
             DataCache.SetLuckRankingCache(authId, luckRanking);
             return luckRanking;
         }
 
-        private RareRankingVO toRareRanking(LuckRankingDto luckRankingDTO)
+
+        private RareRankingVO ToRareRanking(LuckRankingDto luckRankingDTO)
         {
             RareRankingVO rareRankingVO = new RareRankingVO();
             rareRankingVO.TotalWishTimes = luckRankingDTO.TotalWishTimes;
@@ -71,9 +74,47 @@ namespace GenshinWish.Service
             return rareRankingVO;
         }
 
-        public List<ReceiveRecordDto> getRecords(int memberId, RareType rareType, int top)
+        /// <summary>
+        /// 获取出货记录
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="rareType"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
+        public List<ReceiveRecordDto> GetRecords(int memberId, RareType rareType, int top)
         {
             return receiveRecordDao.GetRecords(memberId, rareType, top);
+        }
+
+        /// <summary>
+        /// 添加出货记录
+        /// </summary>
+        /// <param name="wishResult"></param>
+        /// <param name="wishType"></param>
+        /// <param name="memberId"></param>
+        public void AddRecords(WishResultBO wishResult, WishType wishType, int memberId)
+        {
+            var records = wishResult.WishRecords.Where(o => o.GoodsItem.RareType == RareType.五星 || o.GoodsItem.RareType == RareType.四星).ToList();
+            foreach (var record in records) AddRecords(wishResult, record, wishType, memberId);
+        }
+
+        /// <summary>
+        /// 添加出货记录
+        /// </summary>
+        /// <param name="wishResult"></param>
+        /// <param name="wishRecord"></param>
+        /// <param name="wishType"></param>
+        /// <param name="memberId"></param>
+        private void AddRecords(WishResultBO wishResult, WishRecordBO wishRecord, WishType wishType, int memberId)
+        {
+            ReceiveRecordPO receiveRecord = new ReceiveRecordPO();
+            receiveRecord.MemberId = memberId;
+            receiveRecord.GoodsId = wishRecord.GoodsItem.GoodsID;
+            receiveRecord.WishType = wishType;
+            receiveRecord.PoolIndex = wishResult.PoolIndex;
+            receiveRecord.Cost = wishRecord.Cost;
+            receiveRecord.CreateDate = DateTime.Now;
+            receiveRecordDao.Insert(receiveRecord);
         }
 
     }

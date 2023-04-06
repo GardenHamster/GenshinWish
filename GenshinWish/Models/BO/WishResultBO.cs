@@ -1,4 +1,5 @@
 ﻿using GenshinWish.Models.PO;
+using GenshinWish.Type;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,8 +19,7 @@ namespace GenshinWish.Models.BO
 
         public WishRecordBO[] SortWishRecords { get; set; }
 
-        public int Star5Cost { get; set; }
+        public int PoolIndex { get; set; }
 
-        public int Surplus10 { get; set; }
     }
 }

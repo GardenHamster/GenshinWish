@@ -43,7 +43,6 @@ namespace GenshinWish.Controllers
         protected ApiWishResult CreateWishResult(UpItemBO ySUpItem, WishResultBO wishResult, AuthorizeDto authorize, bool toBase64, int imgWidth)
         {
             ApiWishResult apiResult = new ApiWishResult();
-            apiResult.Star5Cost = wishResult.Star5Cost;
             apiResult.WishCount = wishResult.WishRecords.Count();
             apiResult.ApiDailyCallSurplus = authorize.ApiCallSurplus;
             apiResult.Role180Surplus = wishResult.MemberInfo.Char180Surplus;
@@ -58,7 +57,6 @@ namespace GenshinWish.Controllers
             apiResult.Star3Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray());
             apiResult.Star5Up = ChangeToGoodsVO(ySUpItem.Star5UpList);
             apiResult.Star4Up = ChangeToGoodsVO(ySUpItem.Star4UpList);
-            apiResult.Surplus10 = wishResult.Surplus10;
 
             bool withSkin = authorize.Authorize.SkinRate > 0 && RandomHelper.getRandomBetween(1, 100) <= authorize.Authorize.SkinRate;
             using Bitmap wishImage = CreateWishImg(wishResult.SortWishRecords, withSkin, wishResult.MemberInfo.MemberCode);
@@ -151,6 +149,7 @@ namespace GenshinWish.Controllers
         {
             return wishRecords.Select(m => new GoodsVO()
             {
+                Cost = m.Cost,
                 GoodsName = m.GoodsItem.GoodsName,
                 GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsItem.GoodsType),
                 GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsItem.GoodsSubType),

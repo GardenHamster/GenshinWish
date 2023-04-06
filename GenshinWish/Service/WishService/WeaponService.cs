@@ -52,32 +52,21 @@ namespace GenshinWish.Service.WishService
         /// </summary>
         /// <param name="authorize"></param>
         /// <param name="memberInfo"></param>
-        /// <param name="ysUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="assignGoodsItem"></param>
         /// <param name="memberGoods"></param>
         /// <param name="wishCount"></param>
         /// <returns></returns>
-        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO ysUpItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishResultBO wishResult = new WishResultBO();
-            int arm80SurplusBefore = memberInfo.Wpn80Surplus;
-
-            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, ysUpItem, assignGoodsItem, memberGoods, wishCount);
+            WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, assignGoodsItem, memberGoods, wishCount);
             WishRecordBO[] sortRecords = SortRecords(wishRecords);
-
-            //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
-            if (assignGoodsItem == null || memberInfo.AssignValue > 2)
-            {
-                memberInfo.AssignId = 0;
-                memberInfo.AssignValue = 0;
-            }
-
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;
             wishResult.WishRecords = wishRecords;
             wishResult.SortWishRecords = sortRecords;
-            wishResult.Star5Cost = GetStar5Cost(wishRecords, arm80SurplusBefore, 80);
-            wishResult.Surplus10 = memberInfo.Wpn20Surplus % 10;
+            wishResult.PoolIndex = upItem.PoolIndex;
             return wishResult;
         }
 
@@ -85,12 +74,12 @@ namespace GenshinWish.Service.WishService
         /// 模拟抽卡,获取祈愿记录
         /// </summary>
         /// <param name="memberInfo"></param>
-        /// <param name="ySUpItem"></param>
+        /// <param name="upItem"></param>
         /// <param name="assignGoodsItem"></param>
         /// <param name="memberGoods"></param>
         /// <param name="wishCount">抽卡次数</param>
         /// <returns></returns>
-        protected WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO ySUpItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        protected WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)
@@ -98,22 +87,23 @@ namespace GenshinWish.Service.WishService
                 memberInfo.Wpn80Surplus--;
                 memberInfo.Wpn20Surplus--;
 
-                //武器池从第66抽开始,每抽出5星概率提高7%(基础概率),直到第80抽时概率上升到100%
                 if (memberInfo.Wpn80Surplus < 14 && RandomHelper.getRandomBetween(1, 100) < (14 - memberInfo.Wpn80Surplus + 1) * 0.07 * 100)
                 {
-                    records[i] = GetRandomItem(Floor80List, ySUpItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    //武器池从第66抽开始,每抽出5星概率提高7%(基础概率),直到第80抽时概率上升到100%
+                    records[i] = GetRandomItem(Floor80List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
                 }
-                //十连保底
                 else if (memberInfo.Wpn20Surplus % 10 == 0)
                 {
-                    records[i] = GetRandomItem(Floor10List, ySUpItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    //十连保底
+                    records[i] = GetRandomItem(Floor10List, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
                 }
                 else
                 {
-                    records[i] = GetRandomItem(SingleList, ySUpItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
+                    //无保底，无低保
+                    records[i] = GetRandomItem(SingleList, upItem, assignGoodsItem, memberInfo.AssignValue, memberInfo.Wpn20Surplus);
                 }
 
-                bool isUpItem = IsUpItem(ySUpItem, records[i].GoodsItem);//判断是否为本期up的物品
+                bool isUpItem = IsUpItem(upItem, records[i].GoodsItem);//判断是否为本期up的物品
                 bool isAssignItem = assignGoodsItem != null && records[i].GoodsItem.GoodsID == assignGoodsItem.GoodsID;//判断是否为本期定轨物品
                 records[i].OwnedCount = GetOwnedCount(memberGoods, records, records[i]);//统计已拥有数量
 
@@ -141,7 +131,14 @@ namespace GenshinWish.Service.WishService
                     memberInfo.Wpn20Surplus = 20;//十连大保底重置
                     memberInfo.Wpn80Surplus = 80;//八十发保底重置
                 }
+                //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
+                if (assignGoodsItem == null || memberInfo.AssignValue > 2)
+                {
+                    memberInfo.AssignId = 0;
+                    memberInfo.AssignValue = 0;
+                }
             }
+
             return records;
         }
 
@@ -169,8 +166,6 @@ namespace GenshinWish.Service.WishService
             }
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }
-
-
 
     }
 }
