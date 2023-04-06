@@ -1,4 +1,4 @@
-﻿using GenshinWish.Common;
+﻿using GenshinWish.Cache;
 using GenshinWish.Dao;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;

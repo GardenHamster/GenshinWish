@@ -13,47 +13,37 @@ namespace GenshinWish.Models.Api
         /// <summary>
         /// 角色池剩余多少抽五星大保底
         /// </summary>
-        public int Role180Surplus { get; set; }
+        public int Character180Surplus { get; set; }
 
         /// <summary>
         /// 角色池剩余多少抽五星小保底
         /// </summary>
-        public int Role90Surplus { get; set; }
+        public int Character90Surplus { get; set; }
 
         /// <summary>
         /// 武器池剩余多少抽五星保底
         /// </summary>
-        public int Arm80Surplus { get; set; }
+        public int Weapon80Surplus { get; set; }
 
         /// <summary>
         /// 武器池命定值
         /// </summary>
-        public int ArmAssignValue { get; set; }
+        public int WeaponAssignValue { get; set; }
 
         /// <summary>
         /// 常驻池剩余多少抽五星保底
         /// </summary>
-        public int Perm90Surplus { get; set; }
+        public int Standard90Surplus { get; set; }
 
         /// <summary>
         /// 全角色池剩余多少抽五星小保底
         /// </summary>
-        public int FullRole90Surplus { get; set; }
+        public int FullCharacter90Surplus { get; set; }
 
         /// <summary>
         /// 全武器池剩余多少抽五星保底
         /// </summary>
-        public int FullArm80Surplus { get; set; }
-
-        /// <summary>
-        /// 当前祈愿池剩余多少抽十连保底
-        /// </summary>
-        public int Surplus10 { get; set; }
-
-        /// <summary>
-        /// 获得5星物品时累计消耗多少抽
-        /// </summary>
-        public int Star5Cost { get; set; }
+        public int FullWeapon80Surplus { get; set; }
 
         /// <summary>
         /// api当天剩余调用次数

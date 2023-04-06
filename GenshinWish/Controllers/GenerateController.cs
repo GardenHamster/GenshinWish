@@ -1,4 +1,5 @@
 ﻿using GenshinWish.Attribute;
+using GenshinWish.Cache;
 using GenshinWish.Common;
 using GenshinWish.Exceptions;
 using GenshinWish.Models.Api;
@@ -100,7 +101,7 @@ namespace GenshinWish.Controllers
 
                 while (wishRecords.Count < 10)
                 {
-                    GoodsItemBO randomItem = DataCache.ArmStar3PermList.Random();
+                    GoodsItemBO randomItem = DefaultPool.Star3FullItems.Random();
                     wishRecords.Add(new WishRecordBO(randomItem, 2, 0));
                 }
 

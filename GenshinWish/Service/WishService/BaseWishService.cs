@@ -1,5 +1,4 @@
-﻿using GenshinWish.Dao;
-using GenshinWish.Models.BO;
+﻿using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Type;
 using GenshinWish.Util;
@@ -11,17 +10,6 @@ namespace GenshinWish.Service.WishService
 {
     public abstract class BaseWishService : BaseService
     {
-        protected MemberDao memberDao;
-        protected GoodsDao goodsDao;
-
-        public BaseWishService() { }
-
-        public BaseWishService(MemberDao memberDao, GoodsDao goodsDao)
-        {
-            this.memberDao = memberDao;
-            this.goodsDao = goodsDao;
-        }
-
         /// <summary>
         /// 显示顺序排序
         /// </summary>
@@ -97,8 +85,8 @@ namespace GenshinWish.Service.WishService
         /// <returns></returns>
         protected bool IsUpItem(UpItemBO ySUpItem, GoodsItemBO goodsItem)
         {
-            if (ySUpItem.Star5UpList.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
-            if (ySUpItem.Star4UpList.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
+            if (ySUpItem.Star5UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
+            if (ySUpItem.Star4UpItems.Where(m => m.GoodsName == goodsItem.GoodsName).Count() > 0) return true;
             return false;
         }
 
@@ -122,10 +110,6 @@ namespace GenshinWish.Service.WishService
             if (star5Index == -1) return 0;
             return maxSurplus - floorSurplus + star5Index + 1;
         }
-
-
-
-
 
         /// <summary>
         /// 获取一个物品的当前已拥有数量

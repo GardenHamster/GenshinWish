@@ -7,37 +7,37 @@ namespace GenshinWish.Models.BO
         /// <summary>
         /// 5星列表
         /// </summary>
-        public List<GoodsItemBO> Star5AllList { get; set; }
+        public List<GoodsItemBO> Star5FullItems { get; set; }
 
         /// <summary>
         /// 4星列表
         /// </summary>
-        public List<GoodsItemBO> Star4AllList { get; set; }
+        public List<GoodsItemBO> Star4FullItems { get; set; }
 
         /// <summary>
         /// 3星列表
         /// </summary>
-        public List<GoodsItemBO> Star3AllList { get; set; }
+        public List<GoodsItemBO> Star3FullItems { get; set; }
 
         /// <summary>
         /// 5星角色up
         /// </summary>
-        public List<GoodsItemBO> Star5UpList { get; set; }
+        public List<GoodsItemBO> Star5UpItems { get; set; }
 
         /// <summary>
         /// 4星角色up
         /// </summary>
-        public List<GoodsItemBO> Star4UpList { get; set; }
+        public List<GoodsItemBO> Star4UpItems { get; set; }
 
         /// <summary>
         /// 5星角色非up
         /// </summary>
-        public List<GoodsItemBO> Star5NonUpList { get; set; }
+        public List<GoodsItemBO> Star5FixItems { get; set; }
 
         /// <summary>
         /// 4星角色非up
         /// </summary>
-        public List<GoodsItemBO> Star4NonUpList { get; set; }
+        public List<GoodsItemBO> Star4FixItems { get; set; }
 
         /// <summary>
         /// 蛋池编号

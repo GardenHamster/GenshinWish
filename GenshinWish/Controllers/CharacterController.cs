@@ -1,5 +1,5 @@
 ﻿using GenshinWish.Attribute;
-using GenshinWish.Common;
+using GenshinWish.Cache;
 using GenshinWish.Exceptions;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
@@ -60,25 +60,25 @@ namespace GenshinWish.Controllers
 
                 WishResultBO wishResult = null;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadRoleItem(authorizePO.Id);
-                UpItemBO ysUpItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (ysUpItem == null) ysUpItem = DataCache.DefaultRoleItem.ContainsKey(poolIndex) ? DataCache.DefaultRoleItem[poolIndex] : null;
-                if (ysUpItem == null) return ApiResult.PoolNotConfigured;
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadCharacterPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.CharacterPools.ContainsKey(poolIndex) ? DefaultPool.CharacterPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
 
                 lock (SyncLock)
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.角色, poolIndex, wishCount);//添加调用记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.角色, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.角色, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)
@@ -117,25 +117,25 @@ namespace GenshinWish.Controllers
 
                 WishResultBO wishResult = null;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadRoleItem(authorizePO.Id);
-                UpItemBO ysUpItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (ysUpItem == null) ysUpItem = DataCache.DefaultRoleItem.ContainsKey(poolIndex) ? DataCache.DefaultRoleItem[poolIndex] : null;
-                if (ysUpItem == null) return ApiResult.PoolNotConfigured;
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadCharacterPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.CharacterPools.ContainsKey(poolIndex) ? DefaultPool.CharacterPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
 
                 lock (SyncLock)
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.角色, poolIndex, wishCount);//添加调用记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.角色, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.角色, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)

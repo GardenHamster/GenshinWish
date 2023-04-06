@@ -1,5 +1,5 @@
 ﻿using GenshinWish.Attribute;
-using GenshinWish.Common;
+using GenshinWish.Cache;
 using GenshinWish.Exceptions;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
@@ -61,26 +61,26 @@ namespace GenshinWish.Controllers
 
                 WishResultBO wishResult = null;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadArmItem(authorizePO.Id);
-                UpItemBO ysUpItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (ysUpItem == null) ysUpItem = DataCache.DefaultArmItem.ContainsKey(poolIndex) ? DataCache.DefaultArmItem[poolIndex] : null;
-                if (ysUpItem == null) return ApiResult.PoolNotConfigured;
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
 
                 lock (SyncLock)
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    GoodsItemBO assignGoodsItem = memberInfo.AssignId == 0 || ysUpItem.Star5UpList.Where(o => o.GoodsID == memberInfo.AssignId).Any() == false ? null : goodsService.GetGoodsItemById(memberInfo.AssignId);
+                    GoodsItemBO assignGoodsItem = memberInfo.AssignId == 0 || upItem.Star5UpItems.Where(o => o.GoodsID == memberInfo.AssignId).Any() == false ? null : goodsService.GetGoodsItemById(memberInfo.AssignId);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, assignGoodsItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, assignGoodsItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加调用记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)
@@ -119,18 +119,18 @@ namespace GenshinWish.Controllers
 
                 WishResultBO wishResult = null;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadArmItem(authorizePO.Id);
-                UpItemBO ysUpItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (ysUpItem == null) ysUpItem = DataCache.DefaultArmItem.ContainsKey(poolIndex) ? DataCache.DefaultArmItem[poolIndex] : null;
-                if (ysUpItem == null) return ApiResult.PoolNotConfigured;
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
 
                 lock (SyncLock)
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    GoodsItemBO assignGoodsItem = memberInfo.AssignId == 0 || ysUpItem.Star5UpList.Where(o => o.GoodsID == memberInfo.AssignId).Any() == false ? null : goodsService.GetGoodsItemById(memberInfo.AssignId);
+                    GoodsItemBO assignGoodsItem = memberInfo.AssignId == 0 || upItem.Star5UpItems.Where(o => o.GoodsID == memberInfo.AssignId).Any() == false ? null : goodsService.GetGoodsItemById(memberInfo.AssignId);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, assignGoodsItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, assignGoodsItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
                     wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
@@ -138,7 +138,7 @@ namespace GenshinWish.Controllers
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)

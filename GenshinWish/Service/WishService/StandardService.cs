@@ -12,9 +12,12 @@ namespace GenshinWish.Service.WishService
 {
     public class StandardService : BaseWishService
     {
+        protected GoodsDao goodsDao;
+        protected MemberDao memberDao;
+
         public StandardService() { }
 
-        public StandardService(MemberDao memberDao, GoodsDao goodsDao) : base(memberDao, goodsDao)
+        public StandardService(MemberDao memberDao, GoodsDao goodsDao)
         {
             this.memberDao = memberDao;
             this.goodsDao = goodsDao;
@@ -121,9 +124,9 @@ namespace GenshinWish.Service.WishService
         protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO ySUpItem)
         {
             ProbabilityBO ysProbability = GetRandomInList(probabilities);
-            if (ysProbability.ProbabilityType == ProbabilityType.五星物品) return GetRandomInList(ySUpItem.Star5AllList);
-            if (ysProbability.ProbabilityType == ProbabilityType.四星物品) return GetRandomInList(ySUpItem.Star4AllList);
-            if (ysProbability.ProbabilityType == ProbabilityType.三星物品) return GetRandomInList(ySUpItem.Star3AllList);
+            if (ysProbability.ProbabilityType == ProbabilityType.五星物品) return GetRandomInList(ySUpItem.Star5FullItems);
+            if (ysProbability.ProbabilityType == ProbabilityType.四星物品) return GetRandomInList(ySUpItem.Star4FullItems);
+            if (ysProbability.ProbabilityType == ProbabilityType.三星物品) return GetRandomInList(ySUpItem.Star3FullItems);
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }
 

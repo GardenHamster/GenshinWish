@@ -13,6 +13,7 @@ using GenshinWish.Exceptions;
 using GenshinWish.Common;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
+using GenshinWish.Cache;
 
 namespace GenshinWish.Controllers
 {
@@ -56,13 +57,13 @@ namespace GenshinWish.Controllers
                 GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName.Trim());
                 if (goodsInfo == null) return ApiResult.GoodsNotFound;
 
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadArmItem(authorizePO.Id);
-                UpItemBO ysUpItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (ysUpItem == null) ysUpItem = DataCache.DefaultArmItem.ContainsKey(poolIndex) ? DataCache.DefaultArmItem[poolIndex] : null;
-                if (ysUpItem == null) return ApiResult.PoolNotConfigured;
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
 
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
-                if (ysUpItem.Star5UpList.Where(o => o.GoodsID == goodsInfo.Id).Any() == false) return ApiResult.AssignNotFound;
+                if (upItem.Star5UpItems.Where(o => o.GoodsID == goodsInfo.Id).Any() == false) return ApiResult.AssignNotFound;
                 memberService.AssignWeapon(memberInfo, goodsInfo.Id);
                 return ApiResult.Success();
             }

@@ -1,5 +1,5 @@
 ﻿using GenshinWish.Attribute;
-using GenshinWish.Common;
+using GenshinWish.Cache;
 using GenshinWish.Exceptions;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
@@ -59,7 +59,7 @@ namespace GenshinWish.Controllers
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;
-                UpItemBO ysUpItem = DataCache.DefaultPermItem;
+                UpItemBO upItem = DefaultPool.StandardPool;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
 
                 lock (SyncLock)
@@ -67,15 +67,15 @@ namespace GenshinWish.Controllers
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加调用记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.常驻, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)
@@ -113,7 +113,7 @@ namespace GenshinWish.Controllers
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;
-                UpItemBO ysUpItem = DataCache.DefaultPermItem;
+                UpItemBO upItem = DefaultPool.StandardPool;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
 
                 lock (SyncLock)
@@ -121,15 +121,15 @@ namespace GenshinWish.Controllers
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, ysUpItem, memberGoods, wishCount);
+                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加调用记录
+                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加祈愿记录
                     receiveRecordService.AddRecords(wishResult, WishType.常驻, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
 
-                ApiWishResult apiResult = CreateWishResult(ysUpItem, wishResult, authorizeDto, toBase64, imgWidth);
+                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
             catch (BaseException ex)

@@ -12,9 +12,12 @@ namespace GenshinWish.Service.WishService
 {
     public class WeaponService : BaseWishService
     {
+        protected GoodsDao goodsDao;
+        protected MemberDao memberDao;
+
         public WeaponService() { }
 
-        public WeaponService(MemberDao memberDao, GoodsDao goodsDao) : base(memberDao, goodsDao)
+        public WeaponService(MemberDao memberDao, GoodsDao goodsDao)
         {
             this.memberDao = memberDao;
             this.goodsDao = goodsDao;
@@ -59,9 +62,15 @@ namespace GenshinWish.Service.WishService
         /// <returns></returns>
         public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
         {
-            WishResultBO wishResult = new WishResultBO();
+            //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
+            if (assignGoodsItem == null || memberInfo.AssignValue > 2)
+            {
+                memberInfo.AssignId = 0;
+                memberInfo.AssignValue = 0;
+            }
             WishRecordBO[] wishRecords = GetWishRecord(memberInfo, upItem, assignGoodsItem, memberGoods, wishCount);
             WishRecordBO[] sortRecords = SortRecords(wishRecords);
+            WishResultBO wishResult = new WishResultBO();
             wishResult.MemberInfo = memberInfo;
             wishResult.Authorize = authorize;
             wishResult.WishRecords = wishRecords;
@@ -130,13 +139,6 @@ namespace GenshinWish.Service.WishService
                     memberInfo.Wpn80Surplus = 80;//八十发保底重置
                 }
 
-                //当命定值溢出或者定轨项目不在本期5星UP范围内时，重置命定值
-                if (assignGoodsItem == null || memberInfo.AssignValue > 2)
-                {
-                    memberInfo.AssignId = 0;
-                    memberInfo.AssignValue = 0;
-                }
-
                 record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
                 records[i] = record;
             }
@@ -144,7 +146,7 @@ namespace GenshinWish.Service.WishService
             return records;
         }
 
-        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO ysUpItem, GoodsItemBO assignGoodsItem, int assignValue, int floor20Surplus)
+        protected WishRecordBO GetRandomItem(List<ProbabilityBO> probabilities, UpItemBO upItem, GoodsItemBO assignGoodsItem, int assignValue, int floor20Surplus)
         {
             ProbabilityBO ysProbability = GetRandomInList(probabilities);
             if (ysProbability.ProbabilityType == ProbabilityType.五星物品)
@@ -154,17 +156,17 @@ namespace GenshinWish.Service.WishService
                 if (isGetAssign) return new WishRecordBO(assignGoodsItem);
                 //当祈愿获取到5星武器时，有75.000%的概率为本期5星UP武器
                 bool isGetUp = RandomHelper.getRandomBetween(1, 100) <= 75;
-                return isGetUp ? GetRandomInList(ysUpItem.Star5UpList) : GetRandomInList(ysUpItem.Star5NonUpList);
+                return isGetUp ? GetRandomInList(upItem.Star5UpItems) : GetRandomInList(upItem.Star5FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.四星物品)
             {
                 //当祈愿获取到4星物品时，有75.000%的概率为本期4星UP武器
                 bool isGetUp = floor20Surplus < 10 ? true : RandomHelper.getRandomBetween(1, 100) <= 75;
-                return isGetUp ? GetRandomInList(ysUpItem.Star4UpList) : GetRandomInList(ysUpItem.Star4NonUpList);
+                return isGetUp ? GetRandomInList(upItem.Star4UpItems) : GetRandomInList(upItem.Star4FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.三星物品)
             {
-                return GetRandomInList(ysUpItem.Star3AllList);
+                return GetRandomInList(upItem.Star3FullItems);
             }
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }

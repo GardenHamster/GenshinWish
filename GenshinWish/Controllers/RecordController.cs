@@ -1,5 +1,5 @@
 ﻿using GenshinWish.Attribute;
-using GenshinWish.Common;
+using GenshinWish.Cache;
 using GenshinWish.Exceptions;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
@@ -51,37 +51,37 @@ namespace GenshinWish.Controllers
             try
             {
                 AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> wpnUpDic = DataCache.DefaultArmItem.Merge(goodsService.LoadArmItem(authorizePO.Id));
-                Dictionary<int, UpItemBO> charUpDic = DataCache.DefaultRoleItem.Merge(goodsService.LoadRoleItem(authorizePO.Id));
-                Dictionary<int, UpItemBO> stdUpDic = new Dictionary<int, UpItemBO>() { { 0, DataCache.DefaultPermItem } };
+                Dictionary<int, UpItemBO> wpnDic = DefaultPool.WeaponPools.Merge(goodsService.LoadWeaponPool(authorizePO.Id));
+                Dictionary<int, UpItemBO> charDic = DefaultPool.CharacterPools.Merge(goodsService.LoadCharacterPool(authorizePO.Id));
+                Dictionary<int, UpItemBO> stdDic = new Dictionary<int, UpItemBO>() { { 0, DefaultPool.StandardPool } };
 
                 return ApiResult.Success(new
                 {
-                    arm = wpnUpDic.Select(m => new
+                    weapon = wpnDic.Select(m => new
                     {
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpList),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpList)
+                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
+                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
                         }
                     }),
-                    role = charUpDic.Select(m => new
+                    character = charDic.Select(m => new
                     {
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpList),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpList)
+                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
+                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
                         }
                     }),
-                    perm = stdUpDic.Select(m => new
+                    standard = stdDic.Select(m => new
                     {
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpList),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpList)
+                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
+                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
                         }
                     }),
                 });

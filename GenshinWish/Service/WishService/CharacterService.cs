@@ -12,9 +12,12 @@ namespace GenshinWish.Service.WishService
 {
     public class CharacterService : BaseWishService
     {
+        protected GoodsDao goodsDao;
+        protected MemberDao memberDao;
+
         public CharacterService() { }
 
-        public CharacterService(MemberDao memberDao, GoodsDao goodsDao) : base(memberDao, goodsDao)
+        public CharacterService(MemberDao memberDao, GoodsDao goodsDao)
         {
             this.memberDao = memberDao;
             this.goodsDao = goodsDao;
@@ -138,17 +141,17 @@ namespace GenshinWish.Service.WishService
             {
                 //当祈愿获取到5星角色时，有50.000%的概率为本期5星UP角色
                 bool isGetUp = floor180Surplus < 90 ? true : RandomHelper.getRandomBetween(1, 100) <= 50;
-                return isGetUp ? GetRandomInList(ySUpItem.Star5UpList) : GetRandomInList(ySUpItem.Star5NonUpList);
+                return isGetUp ? GetRandomInList(ySUpItem.Star5UpItems) : GetRandomInList(ySUpItem.Star5FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.四星物品)
             {
                 //当祈愿获取到4星物品时，有50.000%的概率为本期4星UP角色
                 bool isGetUp = floor20Surplus < 10 ? true : RandomHelper.getRandomBetween(1, 100) <= 50;
-                return isGetUp ? GetRandomInList(ySUpItem.Star4UpList) : GetRandomInList(ySUpItem.Star4NonUpList);
+                return isGetUp ? GetRandomInList(ySUpItem.Star4UpItems) : GetRandomInList(ySUpItem.Star4FixItems);
             }
             if (ysProbability.ProbabilityType == ProbabilityType.三星物品)
             {
-                return GetRandomInList(ySUpItem.Star3AllList);
+                return GetRandomInList(ySUpItem.Star3FullItems);
             }
             throw new GoodsNotFoundException($"未能随机获取与{Enum.GetName(typeof(ProbabilityBO), ysProbability.ProbabilityType)}对应物品");
         }

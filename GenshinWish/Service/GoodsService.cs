@@ -1,4 +1,4 @@
-﻿using GenshinWish.Common;
+﻿using GenshinWish.Cache;
 using GenshinWish.Dao;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.PO;
@@ -65,136 +65,136 @@ namespace GenshinWish.Service
         /// </summary>
         public void LoadGoodsPool()
         {
-            DataCache.ArmStar3PermList = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.三星));//三星常驻武器
-            DataCache.ArmStar4PermList = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.四星));//四星常驻武器
-            DataCache.ArmStar5PermList = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.五星));//五星常驻武器
-            DataCache.RoleStar4PermList = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.四星));//四星常驻角色
-            DataCache.RoleStar5PermList = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.五星));//五星常驻角色
-            DataCache.Star5PermList = ConcatList(DataCache.RoleStar5PermList, DataCache.ArmStar5PermList);
-            DataCache.Star4PermList = ConcatList(DataCache.RoleStar4PermList, DataCache.ArmStar4PermList);
+            DefaultPool.Star3FullItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.三星));//三星常驻武器
+            DefaultPool.Star4WeaponItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.四星));//四星常驻武器
+            DefaultPool.Star5WeaponItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.五星));//五星常驻武器
+            DefaultPool.Star4CharacterItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.四星));//四星常驻角色
+            DefaultPool.Star5CharacterItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.五星));//五星常驻角色
+            DefaultPool.Star5FullItems = ConcatList(DefaultPool.Star5CharacterItems, DefaultPool.Star5WeaponItems);
+            DefaultPool.Star4FullItems = ConcatList(DefaultPool.Star4CharacterItems, DefaultPool.Star4WeaponItems);
 
             //加载默认常驻池
-            DataCache.DefaultPermItem = LoadPermItem();
+            DefaultPool.StandardPool = LoadPermItem();
 
             //加载默认角色池
-            DataCache.DefaultRoleItem = LoadRoleItem(0);
+            DefaultPool.CharacterPools = LoadCharacterPool(0);
 
             //加载默认武器池
-            DataCache.DefaultArmItem = LoadArmItem(0);
+            DefaultPool.WeaponPools = LoadWeaponPool(0);
 
             //加载全角色池
-            DataCache.FullRoleItem = LoadFullRoleItem();
+            DefaultPool.FullCharacterPool = LoadFullCharItem();
 
             //加载全武器池
-            DataCache.FullArmItem = LoadFullArmItem();
+            DefaultPool.FullWeaponPool = LoadFullWpnItem();
         }
 
         public UpItemBO LoadPermItem()
         {
             UpItemBO upItem = new UpItemBO();
-            upItem.Star5UpList = DataCache.Star5PermList;
-            upItem.Star4UpList = DataCache.Star4PermList;
-            upItem.Star5NonUpList = new List<GoodsItemBO>();
-            upItem.Star4NonUpList = new List<GoodsItemBO>();
-            upItem.Star5AllList = DataCache.Star5PermList;
-            upItem.Star4AllList = DataCache.Star4PermList;
-            upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.Star5UpItems = DefaultPool.Star5FullItems;
+            upItem.Star4UpItems = DefaultPool.Star4FullItems;
+            upItem.Star5FixItems = new List<GoodsItemBO>();
+            upItem.Star4FixItems = new List<GoodsItemBO>();
+            upItem.Star5FullItems = DefaultPool.Star5FullItems;
+            upItem.Star4FullItems = DefaultPool.Star4FullItems;
+            upItem.Star3FullItems = DefaultPool.Star3FullItems;
             upItem.PoolIndex = 0;
             return upItem;
         }
 
-        public Dictionary<int, UpItemBO> LoadRoleItem(int authId)
+        public Dictionary<int, UpItemBO> LoadCharacterPool(int authId)
         {
+            List<GoodsItemBO> itemList = goodsDao.getByWishType(authId, WishType.角色);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
-            List<GoodsItemBO> roleItemList = goodsDao.getByWishType(authId, WishType.角色);
-            List<int> poolIndexList = roleItemList.Select(m => m.PoolIndex).Distinct().ToList();
+            List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
             {
-                List<GoodsItemBO> roleStar5UpList = roleItemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> roleStar4UpList = roleItemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> roleStar5NonUpList = GetNonUpList(DataCache.RoleStar5PermList, roleStar5UpList);
-                List<GoodsItemBO> roleStar4NonUpList = GetNonUpList(DataCache.Star4PermList, roleStar4UpList);
-                List<GoodsItemBO> roleStar5AllList = ConcatList(DataCache.RoleStar5PermList, roleStar5UpList);
-                List<GoodsItemBO> roleStar4AllList = ConcatList(DataCache.RoleStar4PermList, DataCache.ArmStar4PermList, roleStar4UpList);
+                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star5FixItems = GetFixItems(DefaultPool.Star5CharacterItems, star5UpItems);
+                List<GoodsItemBO> star4FixItems = GetFixItems(DefaultPool.Star4FullItems, star4UpItems);
+                List<GoodsItemBO> star5FullItems = ConcatList(DefaultPool.Star5CharacterItems, star5UpItems);
+                List<GoodsItemBO> star4FullItems = ConcatList(DefaultPool.Star4CharacterItems, DefaultPool.Star4WeaponItems, star4UpItems);
                 UpItemBO upItem = new UpItemBO();
-                upItem.Star5UpList = roleStar5UpList;
-                upItem.Star4UpList = roleStar4UpList;
-                upItem.Star5NonUpList = roleStar5NonUpList;
-                upItem.Star4NonUpList = roleStar4NonUpList;
-                upItem.Star5AllList = roleStar5AllList;
-                upItem.Star4AllList = roleStar4AllList;
-                upItem.Star3AllList = DataCache.ArmStar3PermList;
+                upItem.Star5UpItems = star5UpItems;
+                upItem.Star4UpItems = star4UpItems;
+                upItem.Star5FixItems = star5FixItems;
+                upItem.Star4FixItems = star4FixItems;
+                upItem.Star5FullItems = star5FullItems;
+                upItem.Star4FullItems = star4FullItems;
+                upItem.Star3FullItems = DefaultPool.Star3FullItems;
                 upItem.PoolIndex = poolIndex;
                 upItemDic[poolIndex] = upItem;
             }
             return upItemDic;
         }
 
-        public Dictionary<int, UpItemBO> LoadArmItem(int authId)
+        public Dictionary<int, UpItemBO> LoadWeaponPool(int authId)
         {
+            List<GoodsItemBO> itemList = goodsDao.getByWishType(authId, WishType.武器);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
-            List<GoodsItemBO> armItemList = goodsDao.getByWishType(authId, WishType.武器);
-            List<int> poolIndexList = armItemList.Select(m => m.PoolIndex).Distinct().ToList();
+            List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
             {
-                List<GoodsItemBO> armStar5UpList = armItemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> armStar4UpList = armItemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> armStar5NonUpList = GetNonUpList(DataCache.ArmStar5PermList, armStar5UpList);
-                List<GoodsItemBO> armStar4NonUpList = GetNonUpList(DataCache.ArmStar4PermList, armStar4UpList);
-                List<GoodsItemBO> armStar5AllList = ConcatList(DataCache.ArmStar5PermList, armStar5UpList);
-                List<GoodsItemBO> armStar4AllList = ConcatList(DataCache.ArmStar4PermList, armStar4UpList);
+                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star5FixItems = GetFixItems(DefaultPool.Star5WeaponItems, star5UpItems);
+                List<GoodsItemBO> star4FixItems = GetFixItems(DefaultPool.Star4WeaponItems, star4UpItems);
+                List<GoodsItemBO> star5FullItems = ConcatList(DefaultPool.Star5WeaponItems, star5UpItems);
+                List<GoodsItemBO> star4FullItems = ConcatList(DefaultPool.Star4WeaponItems, star4UpItems);
                 UpItemBO upItem = new UpItemBO();
-                upItem.Star5UpList = armStar5UpList;
-                upItem.Star4UpList = armStar4UpList;
-                upItem.Star5NonUpList = armStar5NonUpList;
-                upItem.Star4NonUpList = armStar4NonUpList;
-                upItem.Star5AllList = armStar5AllList;
-                upItem.Star4AllList = armStar4AllList;
-                upItem.Star3AllList = DataCache.ArmStar3PermList;
+                upItem.Star5UpItems = star5UpItems;
+                upItem.Star4UpItems = star4UpItems;
+                upItem.Star5FixItems = star5FixItems;
+                upItem.Star4FixItems = star4FixItems;
+                upItem.Star5FullItems = star5FullItems;
+                upItem.Star4FullItems = star4FullItems;
+                upItem.Star3FullItems = DefaultPool.Star3FullItems;
                 upItem.PoolIndex = poolIndex;
                 upItemDic[poolIndex] = upItem;
             }
             return upItemDic;
         }
 
-        public UpItemBO LoadFullRoleItem()
+        public UpItemBO LoadFullCharItem()
         {
-            List<GoodsItemBO> roleItemList = goodsDao.getByGoodsType(GoodsType.角色);
-            List<GoodsItemBO> roleStar5UpList = roleItemList.Where(m => m.RareType == RareType.五星).ToList();
-            List<GoodsItemBO> roleStar4UpList = roleItemList.Where(m => m.RareType == RareType.四星).ToList();
-            List<GoodsItemBO> roleStar5NonUpList = new List<GoodsItemBO>();
-            List<GoodsItemBO> roleStar4NonUpList = new List<GoodsItemBO>();
-            List<GoodsItemBO> roleStar5AllList = roleStar5UpList;
-            List<GoodsItemBO> roleStar4AllList = ConcatList(DataCache.ArmStar4PermList, roleStar4UpList);
+            List<GoodsItemBO> itemList = goodsDao.getByGoodsType(GoodsType.角色);
+            List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星).ToList();
+            List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星).ToList();
+            List<GoodsItemBO> star5FixItems = new List<GoodsItemBO>();
+            List<GoodsItemBO> star4FixItems = new List<GoodsItemBO>();
+            List<GoodsItemBO> star5FullItems = star5UpItems;
+            List<GoodsItemBO> star4FullItems = ConcatList(DefaultPool.Star4WeaponItems, star4UpItems);
             UpItemBO upItem = new UpItemBO();
-            upItem.Star5UpList = roleStar5UpList;
-            upItem.Star4UpList = roleStar4UpList;
-            upItem.Star5NonUpList = roleStar5NonUpList;
-            upItem.Star4NonUpList = roleStar4NonUpList;
-            upItem.Star5AllList = roleStar5AllList;
-            upItem.Star4AllList = roleStar4AllList;
-            upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.Star5UpItems = star5UpItems;
+            upItem.Star4UpItems = star4UpItems;
+            upItem.Star5FixItems = star5FixItems;
+            upItem.Star4FixItems = star4FixItems;
+            upItem.Star5FullItems = star5FullItems;
+            upItem.Star4FullItems = star4FullItems;
+            upItem.Star3FullItems = DefaultPool.Star3FullItems;
             upItem.PoolIndex = 0;
             return upItem;
         }
 
-        public UpItemBO LoadFullArmItem()
+        public UpItemBO LoadFullWpnItem()
         {
-            List<GoodsItemBO> armItemList = goodsDao.getByGoodsType(GoodsType.武器);
-            List<GoodsItemBO> armStar5UpList = armItemList.Where(m => m.RareType == RareType.五星).ToList();
-            List<GoodsItemBO> armStar4UpList = armItemList.Where(m => m.RareType == RareType.四星).ToList();
-            List<GoodsItemBO> armStar5NonUpList = new List<GoodsItemBO>();
-            List<GoodsItemBO> armStar4NonUpList = new List<GoodsItemBO>();
-            List<GoodsItemBO> armStar5AllList = armStar5UpList;
-            List<GoodsItemBO> armStar4AllList = armStar4UpList;
+            List<GoodsItemBO> itemList = goodsDao.getByGoodsType(GoodsType.武器);
+            List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星).ToList();
+            List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星).ToList();
+            List<GoodsItemBO> star5FixItems = new List<GoodsItemBO>();
+            List<GoodsItemBO> star4FixItems = new List<GoodsItemBO>();
+            List<GoodsItemBO> star5FullItems = star5UpItems;
+            List<GoodsItemBO> star4FullItems = star4UpItems;
             UpItemBO upItem = new UpItemBO();
-            upItem.Star5UpList = armStar5UpList;
-            upItem.Star4UpList = armStar4UpList;
-            upItem.Star5NonUpList = armStar5NonUpList;
-            upItem.Star4NonUpList = armStar4NonUpList;
-            upItem.Star5AllList = armStar5AllList;
-            upItem.Star4AllList = armStar4AllList;
-            upItem.Star3AllList = DataCache.ArmStar3PermList;
+            upItem.Star5UpItems = star5UpItems;
+            upItem.Star4UpItems = star4UpItems;
+            upItem.Star5FixItems = star5FixItems;
+            upItem.Star4FixItems = star4FixItems;
+            upItem.Star5FullItems = star5FullItems;
+            upItem.Star4FullItems = star4FullItems;
+            upItem.Star3FullItems = DefaultPool.Star3FullItems;
             upItem.PoolIndex = 0;
             return upItem;
         }
@@ -203,15 +203,15 @@ namespace GenshinWish.Service
         /// 返回非up列表
         /// </summary>
         /// <returns></returns>
-        private List<GoodsItemBO> GetNonUpList(List<GoodsItemBO> AllList, List<GoodsItemBO> UpList)
+        private List<GoodsItemBO> GetFixItems(List<GoodsItemBO> fullList, List<GoodsItemBO> upList)
         {
-            List<GoodsItemBO> NonUpList = new List<GoodsItemBO>();
-            foreach (GoodsItemBO goodsItem in AllList)
+            List<GoodsItemBO> list = new List<GoodsItemBO>();
+            foreach (GoodsItemBO goodsItem in fullList)
             {
-                if (UpList.Where(m => m.GoodsName == goodsItem.GoodsName).Any()) continue;
-                NonUpList.Add(goodsItem);
+                if (upList.Where(m => m.GoodsName == goodsItem.GoodsName).Any()) continue;
+                list.Add(goodsItem);
             }
-            return NonUpList;
+            return list;
         }
 
         /// <summary>
@@ -253,7 +253,7 @@ namespace GenshinWish.Service
             if (assignId == 0) return null;
             GoodsPO goods = goodsDao.GetById(assignId);
             if (goods is null) return null;
-            if (ySUpItem.Star5UpList.Where(o => o.GoodsID == assignId).Any() == false) return null;
+            if (ySUpItem.Star5UpItems.Where(o => o.GoodsID == assignId).Any() == false) return null;
             return new GoodsItemBO(goods);
         }
 

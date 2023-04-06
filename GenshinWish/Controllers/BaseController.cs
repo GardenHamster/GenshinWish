@@ -45,18 +45,18 @@ namespace GenshinWish.Controllers
             ApiWishResult apiResult = new ApiWishResult();
             apiResult.WishCount = wishResult.WishRecords.Count();
             apiResult.ApiDailyCallSurplus = authorize.ApiCallSurplus;
-            apiResult.Role180Surplus = wishResult.MemberInfo.Char180Surplus;
-            apiResult.Role90Surplus = wishResult.MemberInfo.Char180Surplus % 90;
-            apiResult.Arm80Surplus = wishResult.MemberInfo.Wpn80Surplus;
-            apiResult.ArmAssignValue = wishResult.MemberInfo.AssignValue;
-            apiResult.Perm90Surplus = wishResult.MemberInfo.Std90Surplus;
-            apiResult.FullRole90Surplus = wishResult.MemberInfo.FullChar90Surplus;
-            apiResult.FullArm80Surplus = wishResult.MemberInfo.FullWpn80Surplus;
+            apiResult.Character180Surplus = wishResult.MemberInfo.Char180Surplus;
+            apiResult.Character90Surplus = wishResult.MemberInfo.Char180Surplus % 90;
+            apiResult.Weapon80Surplus = wishResult.MemberInfo.Wpn80Surplus;
+            apiResult.WeaponAssignValue = wishResult.MemberInfo.AssignValue;
+            apiResult.Standard90Surplus = wishResult.MemberInfo.Std90Surplus;
+            apiResult.FullCharacter90Surplus = wishResult.MemberInfo.FullChar90Surplus;
+            apiResult.FullWeapon80Surplus = wishResult.MemberInfo.FullWpn80Surplus;
             apiResult.Star5Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray());
             apiResult.Star4Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray());
             apiResult.Star3Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray());
-            apiResult.Star5Up = ChangeToGoodsVO(ySUpItem.Star5UpList);
-            apiResult.Star4Up = ChangeToGoodsVO(ySUpItem.Star4UpList);
+            apiResult.Star5Up = ChangeToGoodsVO(ySUpItem.Star5UpItems);
+            apiResult.Star4Up = ChangeToGoodsVO(ySUpItem.Star4UpItems);
 
             bool withSkin = authorize.Authorize.SkinRate > 0 && RandomHelper.getRandomBetween(1, 100) <= authorize.Authorize.SkinRate;
             using Bitmap wishImage = CreateWishImg(wishResult.SortWishRecords, withSkin, wishResult.MemberInfo.MemberCode);
