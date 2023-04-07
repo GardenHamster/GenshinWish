@@ -52,48 +52,9 @@ namespace GenshinWish.Controllers
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { ApiLimit.Yes })]
         public ApiResult Once([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
-            try
-            {
-                int poolIndex = 0;
-                int wishCount = 1;
-                checkNullParam(memberCode);
-                CheckImgWidth(imgWidth);
-
-                WishResultBO wishResult = null;
-                AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
-                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
-                if (upItem == null) return ApiResult.PoolNotConfigured;
-
-                lock (SyncLock)
-                {
-                    DbScoped.SugarScope.BeginTran();
-                    MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
-                    memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加祈愿记录
-                    receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
-                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
-                    DbScoped.SugarScope.CommitTran();
-                }
-
-                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
-                return ApiResult.Success(apiResult);
-            }
-            catch (BaseException ex)
-            {
-                DbScoped.SugarScope.RollbackTran();
-                LogHelper.Info(ex);
-                return ApiResult.Error(ex);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex, $"authorzation：{GetAuthCode()}，memberCode：{memberCode}，toBase64：{toBase64}，imgWidth：{imgWidth}");
-                DbScoped.SugarScope.RollbackTran();
-                return ApiResult.ServerError;
-            }
+            int poolIndex = 0;
+            int wishCount = 1;
+            return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
         }
 
         /// <summary>
@@ -109,66 +70,50 @@ namespace GenshinWish.Controllers
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { ApiLimit.Yes })]
         public ApiResult Ten([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
-            try
-            {
-                int poolIndex = 0;
-                int wishCount = 10;
-                checkNullParam(memberCode);
-                CheckImgWidth(imgWidth);
-
-                WishResultBO wishResult = null;
-                AuthorizePO authorizePO = authorizeDto.Authorize;
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
-                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
-                if (upItem == null) return ApiResult.PoolNotConfigured;
-
-                lock (SyncLock)
-                {
-                    DbScoped.SugarScope.BeginTran();
-                    MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
-                    wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
-                    memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.武器, poolIndex, wishCount);//添加祈愿记录
-                    receiveRecordService.AddRecords(wishResult, WishType.武器, memberInfo.Id);//添加成员出货记录
-                    memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
-                    DbScoped.SugarScope.CommitTran();
-                }
-
-                ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
-                return ApiResult.Success(apiResult);
-            }
-            catch (BaseException ex)
-            {
-                DbScoped.SugarScope.RollbackTran();
-                LogHelper.Info(ex);
-                return ApiResult.Error(ex);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex, $"authorzation：{GetAuthCode()}，memberCode：{memberCode}，toBase64：{toBase64}，imgWidth：{imgWidth}");
-                DbScoped.SugarScope.RollbackTran();
-                return ApiResult.ServerError;
-            }
+            int poolIndex = 0;
+            int wishCount = 10;
+            return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
         }
 
+        /// <summary>
+        /// 百连武器祈愿池
+        /// </summary>
+        /// <param name="authorizeDto"></param>
+        /// <param name="memberCode"></param>
+        /// <param name="memberName"></param>
+        /// <param name="toBase64"></param>
+        /// <param name="imgWidth"></param>
+        /// <returns></returns>
         public ApiResult Hundred([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
+        {
+            int poolIndex = 0;
+            int wishCount = 100;
+            return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
+        }
+
+        /// <summary>
+        /// 祈愿
+        /// </summary>
+        /// <param name="authorizeDto"></param>
+        /// <param name="memberCode"></param>
+        /// <param name="memberName"></param>
+        /// <param name="toBase64"></param>
+        /// <param name="imgWidth"></param>
+        /// <param name="poolIndex"></param>
+        /// <param name="wishCount"></param>
+        /// <returns></returns>
+        private ApiResult Wish(AuthorizeDto authorizeDto, string memberCode, string memberName, bool toBase64, int imgWidth, int poolIndex, int wishCount)
         {
             try
             {
-                int poolIndex = 0;
-                int wishCount = 100;
                 checkNullParam(memberCode);
                 CheckImgWidth(imgWidth);
-
                 WishResultBO wishResult = null;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
                 Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
                 UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
                 if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
                 if (upItem == null) return ApiResult.PoolNotConfigured;
-
                 lock (SyncLock)
                 {
                     DbScoped.SugarScope.BeginTran();
@@ -181,7 +126,6 @@ namespace GenshinWish.Controllers
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
-
                 ApiWishResult apiResult = CreateWishResult(upItem, wishResult, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(apiResult);
             }
