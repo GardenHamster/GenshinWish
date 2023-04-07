@@ -1,5 +1,6 @@
 ﻿using GenshinWish.Cache;
 using GenshinWish.Dao;
+using GenshinWish.Helper;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.PO;
 using GenshinWish.Type;
@@ -53,11 +54,11 @@ namespace GenshinWish.Service
         /// </summary>
         public void LoadGoodsPool()
         {
-            DefaultPool.Star3FullItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.三星));//三星常驻武器
-            DefaultPool.Star4WeaponItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.四星));//四星常驻武器
-            DefaultPool.Star5WeaponItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.武器, RareType.五星));//五星常驻武器
-            DefaultPool.Star4CharacterItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.四星));//四星常驻角色
-            DefaultPool.Star5CharacterItems = ChangeToGoodsItem(goodsDao.getStandardGoods(GoodsType.角色, RareType.五星));//五星常驻角色
+            DefaultPool.Star3FullItems = goodsDao.getStandardGoods(GoodsType.武器, RareType.三星).ToGoodsItem();//三星常驻武器
+            DefaultPool.Star4WeaponItems = goodsDao.getStandardGoods(GoodsType.武器, RareType.四星).ToGoodsItem();//四星常驻武器
+            DefaultPool.Star5WeaponItems = goodsDao.getStandardGoods(GoodsType.武器, RareType.五星).ToGoodsItem();//五星常驻武器
+            DefaultPool.Star4CharacterItems = goodsDao.getStandardGoods(GoodsType.角色, RareType.四星).ToGoodsItem();//四星常驻角色
+            DefaultPool.Star5CharacterItems = goodsDao.getStandardGoods(GoodsType.角色, RareType.五星).ToGoodsItem();//五星常驻角色
             DefaultPool.Star5FullItems = ConcatList(DefaultPool.Star5CharacterItems, DefaultPool.Star5WeaponItems);
             DefaultPool.Star4FullItems = ConcatList(DefaultPool.Star4CharacterItems, DefaultPool.Star4WeaponItems);
             DefaultPool.StandardPool = LoadStandardPool();//加载常驻池
@@ -83,13 +84,13 @@ namespace GenshinWish.Service
 
         public Dictionary<int, UpItemBO> LoadCharacterPool(int authId)
         {
-            List<GoodsItemBO> itemList = goodsDao.getPoolItems(authId, PoolType.角色);
+            List<PoolItemBO> itemList = goodsPoolDao.getPoolItems(authId, PoolType.角色);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
             List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
             {
-                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).Cast<GoodsItemBO>().ToList();
+                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).Cast<GoodsItemBO>().ToList();
                 List<GoodsItemBO> star5FixItems = GetFixItems(DefaultPool.Star5CharacterItems, star5UpItems);
                 List<GoodsItemBO> star4FixItems = GetFixItems(DefaultPool.Star4FullItems, star4UpItems);
                 List<GoodsItemBO> star5FullItems = ConcatList(DefaultPool.Star5CharacterItems, star5UpItems);
@@ -110,13 +111,13 @@ namespace GenshinWish.Service
 
         public Dictionary<int, UpItemBO> LoadWeaponPool(int authId)
         {
-            List<GoodsItemBO> itemList = goodsDao.getPoolItems(authId, PoolType.武器);
+            List<PoolItemBO> itemList = goodsPoolDao.getPoolItems(authId, PoolType.武器);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
             List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
             {
-                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).ToList();
-                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).ToList();
+                List<GoodsItemBO> star5UpItems = itemList.Where(m => m.RareType == RareType.五星 && m.PoolIndex == poolIndex).Cast<GoodsItemBO>().ToList();
+                List<GoodsItemBO> star4UpItems = itemList.Where(m => m.RareType == RareType.四星 && m.PoolIndex == poolIndex).Cast<GoodsItemBO>().ToList();
                 List<GoodsItemBO> star5FixItems = GetFixItems(DefaultPool.Star5WeaponItems, star5UpItems);
                 List<GoodsItemBO> star4FixItems = GetFixItems(DefaultPool.Star4WeaponItems, star4UpItems);
                 List<GoodsItemBO> star5FullItems = ConcatList(DefaultPool.Star5WeaponItems, star5UpItems);
@@ -183,28 +184,7 @@ namespace GenshinWish.Service
         /// <returns></returns>
         private List<GoodsItemBO> GetFixItems(List<GoodsItemBO> fullList, List<GoodsItemBO> upList)
         {
-            List<GoodsItemBO> list = new List<GoodsItemBO>();
-            foreach (GoodsItemBO goodsItem in fullList)
-            {
-                if (upList.Where(m => m.GoodsName == goodsItem.GoodsName).Any()) continue;
-                list.Add(goodsItem);
-            }
-            return list;
-        }
-
-        /// <summary>
-        /// 将GoodsPO转化为YSGoodsItem
-        /// </summary>
-        /// <param name="poList"></param>
-        /// <returns></returns>
-        private List<GoodsItemBO> ChangeToGoodsItem(List<GoodsPO> poList)
-        {
-            List<GoodsItemBO> goodsItemList = new List<GoodsItemBO>();
-            foreach (GoodsPO goodsPO in poList)
-            {
-                goodsItemList.Add(new GoodsItemBO(goodsPO));
-            }
-            return goodsItemList;
+            return fullList.Where(o => upList.Contains(o) == false).ToList();
         }
 
         /// <summary>
@@ -306,9 +286,6 @@ namespace GenshinWish.Service
                 goodsPoolDao.Insert(goodsPool);
             }
         }
-
-
-
 
 
     }

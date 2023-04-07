@@ -2,7 +2,7 @@
 
 namespace GenshinWish.Models.BO
 {
-    public class UpItemBO
+    public record UpItemBO
     {
         /// <summary>
         /// 5星列表

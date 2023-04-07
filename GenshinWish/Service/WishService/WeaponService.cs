@@ -61,7 +61,7 @@ namespace GenshinWish.Service.WishService
         /// <param name="memberGoods"></param>
         /// <param name="wishCount"></param>
         /// <returns></returns>
-        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        public WishResultBO GetWishResult(AuthorizePO authorize, MemberPO memberInfo, UpItemBO upItem, List<MemberGoodsBO> memberGoods, int wishCount)
         {
             var assignItem = GetAssignItem(memberInfo, upItem);
             CheckAssign(memberInfo, assignItem);
@@ -123,7 +123,7 @@ namespace GenshinWish.Service.WishService
         /// <param name="memberGoods"></param>
         /// <param name="wishCount">抽卡次数</param>
         /// <returns></returns>
-        protected WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsDto> memberGoods, int wishCount)
+        protected WishRecordBO[] GetWishRecord(MemberPO memberInfo, UpItemBO upItem, GoodsItemBO assignGoodsItem, List<MemberGoodsBO> memberGoods, int wishCount)
         {
             WishRecordBO[] records = new WishRecordBO[wishCount];
             for (int i = 0; i < records.Length; i++)

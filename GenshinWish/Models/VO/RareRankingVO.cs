@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GenshinWish.Models.VO
 {
-    public class RareRankingVO
+    public record RareRankingVO
     {
         public string MemberCode { get; set; }
 

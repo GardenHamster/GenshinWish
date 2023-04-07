@@ -1,8 +1,7 @@
 ﻿using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
+using GenshinWish.Models.PO;
 using GenshinWish.Models.VO;
-using GenshinWish.Type;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,53 +12,41 @@ namespace GenshinWish.Helper
         /// <summary>
         /// 转换为WishRecordVO
         /// </summary>
-        /// <param name="recordList"></param>
+        /// <param name="list"></param>
         /// <returns></returns>
-        public static List<WishRecordVO> ToWishRecordVO(this List<ReceiveRecordDto> recordList)
+        public static List<WishRecordVO> ToWishRecordVO(this List<ReceiveRecordDto> list)
         {
-            return recordList.Select(m => new WishRecordVO()
-            {
-                GoodsName = m.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.RareType),
-                PoolType = Enum.GetName(typeof(PoolType), m.PoolType),
-                Cost = m.Cost,
-                CreateDate = m.CreateDate
-            }).ToList();
+            return list.Select(o => new WishRecordVO(o)).ToList();
         }
 
         /// <summary>
         /// 转换为GoodsVO
         /// </summary>
-        /// <param name="wishRecords"></param>
+        /// <param name="array"></param>
         /// <returns></returns>
-        public static List<GoodsVO> ToGoodsVO(this WishRecordBO[] wishRecords)
+        public static List<GoodsVO> ToGoodsVO(this WishRecordBO[] array)
         {
-            return wishRecords.Select(m => new GoodsVO()
-            {
-                Cost = m.Cost,
-                GoodsName = m.GoodsItem.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsItem.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsItem.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.GoodsItem.RareType),
-            }).ToList();
+            return array.Select(o => new GoodsVO(o)).ToList();
         }
 
         /// <summary>
         /// 转换为GoodsVO
         /// </summary>
-        /// <param name="goodsItems"></param>
+        /// <param name="list"></param>
         /// <returns></returns>
-        public static List<GoodsVO> ToGoodsVO(this List<GoodsItemBO> goodsItems)
+        public static List<GoodsVO> ToGoodsVO(this List<GoodsItemBO> list)
         {
-            return goodsItems.Select(m => new GoodsVO()
-            {
-                GoodsName = m.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.RareType)
-            }).ToList();
+            return list.Select(o => new GoodsVO(o)).ToList();
+        }
+
+        /// <summary>
+        /// 转化为GoodsItem
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static List<GoodsItemBO> ToGoodsItem(this List<GoodsPO> list)
+        {
+            return list.Select(o => new GoodsItemBO(o)).ToList();
         }
 
     }

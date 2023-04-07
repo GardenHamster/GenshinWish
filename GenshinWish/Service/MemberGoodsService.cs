@@ -21,12 +21,12 @@ namespace GenshinWish.Service
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns></returns>
-        public List<MemberGoodsDto> GetMemberGoods(int memberId)
+        public List<MemberGoodsBO> GetMemberGoods(int memberId)
         {
             return memberGoodsDao.GetGoods(memberId);
         }
 
-        public void AddMemberGoods(WishResultBO wishResult, List<MemberGoodsDto> memberGoods, int memberId)
+        public void AddMemberGoods(WishResultBO wishResult, List<MemberGoodsBO> memberGoods, int memberId)
         {
             var countList = wishResult.WishRecords.GroupBy(o => o.GoodsItem.GoodsID).Select(o => new { GroodsId = o.Key, Count = o.Count() });
             foreach (var item in countList)

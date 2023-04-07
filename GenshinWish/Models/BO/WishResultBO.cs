@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GenshinWish.Models.BO
 {
-    public class WishResultBO
+    public record WishResultBO
     {
         public AuthorizePO Authorize { get; set; }
 

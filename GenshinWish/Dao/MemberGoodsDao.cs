@@ -13,13 +13,12 @@ namespace GenshinWish.Dao
         /// </summary>
         /// <param name="memberId"></param>
         /// <returns></returns>
-        public List<MemberGoodsDto> GetGoods(int memberId)
+        public List<MemberGoodsBO> GetGoods(int memberId)
         {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.Id,g.GoodsName,g.GoodsType,g.RareType,mg.Count from member_goods mg");
-            sqlBuilder.Append(" inner join goods g on g.Id=mg.GoodsId");
-            sqlBuilder.Append(" where mg.MemberId=@MemberId");
-            return Db.Ado.SqlQuery<MemberGoodsDto>(sqlBuilder.ToString(), new { MemberId = memberId });
+            return Db.Queryable<MemberGoodsPO>()
+            .InnerJoin<GoodsPO>((mg, g) => mg.GoodsId == g.Id)
+            .Where((mg, g) => mg.MemberId == memberId)
+            .Select((mg, g) => new MemberGoodsBO(mg, g)).ToList();
         }
 
         /// <summary>
@@ -31,9 +30,9 @@ namespace GenshinWish.Dao
         public int CountGoods(int memberId, RareType rareType)
         {
             return Db.Queryable<MemberGoodsPO>()
-                .InnerJoin<GoodsPO>((mg, g) => mg.GoodsId == g.Id)
-                .Where((mg, g) => mg.MemberId == memberId && g.RareType == rareType)
-                .Sum(mg => mg.Count);
+            .InnerJoin<GoodsPO>((mg, g) => mg.GoodsId == g.Id)
+            .Where((mg, g) => mg.MemberId == memberId && g.RareType == rareType)
+            .Sum(mg => mg.Count);
         }
 
         /// <summary>
@@ -56,9 +55,9 @@ namespace GenshinWish.Dao
         public int AddCount(int memberId, int goodsId, int count)
         {
             return Db.Updateable<MemberGoodsPO>()
-                .SetColumns(o => o.Count == o.Count + count)
-                .Where(o => o.MemberId == memberId && o.GoodsId == goodsId)
-                .ExecuteCommand();
+            .SetColumns(o => o.Count == o.Count + count)
+            .Where(o => o.MemberId == memberId && o.GoodsId == goodsId)
+            .ExecuteCommand();
         }
 
     }

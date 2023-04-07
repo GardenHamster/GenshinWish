@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GenshinWish.Models.BO
 {
-    public class WishRecordBO
+    public record WishRecordBO
     {
         /// <summary>
         /// 获得的物品

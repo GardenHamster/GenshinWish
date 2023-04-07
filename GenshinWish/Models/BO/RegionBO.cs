@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GenshinWish.Models.BO
 {
-    public class RegionBO<T>
+    public record RegionBO<T>
     {
         public int StartRegion { get; set; }
 

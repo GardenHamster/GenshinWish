@@ -17,7 +17,7 @@ namespace GenshinWish.Dao
         /// <param name="poolType"></param>
         /// <param name="rareType"></param>
         /// <returns></returns>
-        public int CountRate(int memberId, PoolType poolType, RareType rareType)
+        public decimal CountRate(int memberId, PoolType poolType, RareType rareType)
         {
             StringBuilder sqlBuilder = new StringBuilder();
             sqlBuilder.Append(" select count(mg.Id) count from member_goods mg");

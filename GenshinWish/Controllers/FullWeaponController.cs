@@ -66,7 +66,7 @@ namespace GenshinWish.Controllers
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
+                    List<MemberGoodsBO> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
                     DbScoped.SugarScope.CommitTran();
@@ -116,7 +116,7 @@ namespace GenshinWish.Controllers
                 {
                     DbScoped.SugarScope.BeginTran();
                     MemberPO memberInfo = memberService.GetOrInsert(authorizePO.Id, memberCode, memberName);
-                    List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
+                    List<MemberGoodsBO> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
                     DbScoped.SugarScope.CommitTran();

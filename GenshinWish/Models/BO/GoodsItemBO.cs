@@ -6,7 +6,7 @@ namespace GenshinWish.Models.BO
     /// <summary>
     /// 补给项目
     /// </summary>
-    public class GoodsItemBO
+    public record GoodsItemBO
     {
         /// <summary>
         /// 物品ID
@@ -33,20 +33,16 @@ namespace GenshinWish.Models.BO
         /// </summary>
         public GoodsSubType GoodsSubType { get; set; }
 
-        /// <summary>
-        /// 蛋池编号
-        /// </summary>
-        public int PoolIndex { get; set; }
 
         public GoodsItemBO() { }
 
         public GoodsItemBO(GoodsPO goods)
         {
-            GoodsID = goods.Id;
-            GoodsName = goods.GoodsName;
-            RareType = goods.RareType;
-            GoodsType = goods.GoodsType;
-            GoodsSubType = goods.GoodsSubType;
+            this.GoodsID = goods.Id;
+            this.GoodsName = goods.GoodsName;
+            this.RareType = goods.RareType;
+            this.GoodsType = goods.GoodsType;
+            this.GoodsSubType = goods.GoodsSubType;
         }
 
     }

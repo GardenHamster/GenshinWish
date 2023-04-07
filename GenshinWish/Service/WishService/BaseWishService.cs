@@ -116,8 +116,8 @@ namespace GenshinWish.Service.WishService
             int star5Index = -1;
             for (int i = 0; i < wishRecords.Length; i++)
             {
-                GoodsItemBO YSGoodsItem = wishRecords[i].GoodsItem;
-                if (YSGoodsItem.RareType != RareType.五星) continue;
+                GoodsItemBO GoodsItem = wishRecords[i].GoodsItem;
+                if (GoodsItem.RareType != RareType.五星) continue;
                 star5Index = i;
                 break;
             }
@@ -132,9 +132,9 @@ namespace GenshinWish.Service.WishService
         /// <param name="records"></param>
         /// <param name="checkRecord"></param>
         /// <returns></returns>
-        protected int GetOwnedCount(List<MemberGoodsDto> memberGoods, WishRecordBO[] records, WishRecordBO checkRecord)
+        protected int GetOwnedCount(List<MemberGoodsBO> memberGoods, WishRecordBO[] records, WishRecordBO checkRecord)
         {
-            MemberGoodsDto ownedGood = memberGoods.Where(m => m.GoodsName == checkRecord.GoodsItem.GoodsName).FirstOrDefault();
+            MemberGoodsBO ownedGood = memberGoods.Where(m => m.GoodsName == checkRecord.GoodsItem.GoodsName).FirstOrDefault();
             int ownInDatabase = ownedGood == null ? 0 : ownedGood.Count;
             int ownInRecord = records.Where(m => m != null && m.GoodsItem.GoodsName == checkRecord.GoodsItem.GoodsName).Count();
             return ownInDatabase + ownInRecord;

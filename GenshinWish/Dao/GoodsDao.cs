@@ -13,35 +13,16 @@ namespace GenshinWish.Dao
             return Db.Queryable<GoodsPO>().OrderBy(o => o.Id).ToList();
         }
 
-        public List<GoodsItemBO> getByGoodsType(GoodsType goodsType)
-        {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.Id as GoodsID,g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType from goods g");
-            sqlBuilder.Append(" where g.GoodsType=@goodsType and g.isDisable=0");
-            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { goodsType });
-        }
-
         public GoodsPO getByGoodsName(string goodsName)
         {
             return Db.Queryable<GoodsPO>().Where(o => o.GoodsName == goodsName && o.IsDisable == false).First();
         }
 
-        public List<GoodsItemBO> getPoolItems(int authId, PoolType poolType)
+        public List<GoodsItemBO> getByGoodsType(GoodsType goodsType)
         {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
-            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
-            sqlBuilder.Append(" where pg.AuthId=@authId and pg.PoolType=@PoolType and g.isDisable=0");
-            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, PoolType = poolType });
-        }
-
-        public List<GoodsItemBO> getPoolItems(int authId, PoolType poolType, int poolIndex)
-        {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
-            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
-            sqlBuilder.Append(" where pg.AuthId=@authId and pg.PoolType=@PoolType and pg.PoolIndex=@poolIndex and g.isDisable=0");
-            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, PoolType = poolType, poolIndex });
+            return Db.Queryable<GoodsPO>()
+            .Where(g => g.GoodsType == goodsType && g.IsDisable == false)
+            .Select(g => new GoodsItemBO(g)).ToList();
         }
 
         public List<GoodsPO> getStandardGoods(GoodsType goodsType, RareType rareType)

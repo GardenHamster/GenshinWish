@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GenshinWish.Models.BO
 {
-    public class ProbabilityBO
+    public record ProbabilityBO
     {
         /// <summary>
         /// 概率类型
