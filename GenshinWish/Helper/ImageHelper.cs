@@ -8,7 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 
-namespace GenshinWish.Util
+namespace GenshinWish.Helper
 {
     public static class ImageHelper
     {

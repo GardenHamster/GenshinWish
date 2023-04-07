@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace GenshinWish.Util
+namespace GenshinWish.Helper
 {
     public static class DrawHelper
     {

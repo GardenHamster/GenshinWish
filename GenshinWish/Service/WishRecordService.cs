@@ -14,11 +14,11 @@ namespace GenshinWish.Service
             this.wishRecordDao = wishRecordDao;
         }
 
-        public WishRecordPO AddRecord(int memberId, WishType wishType, int poolIndex, int count)
+        public WishRecordPO AddRecord(int memberId, PoolType poolType, int poolIndex, int count)
         {
             WishRecordPO wishRecord = new WishRecordPO();
             wishRecord.MemberId = memberId;
-            wishRecord.WishType = wishType;
+            wishRecord.PoolType = poolType;
             wishRecord.WishIndex = poolIndex;
             wishRecord.WishCount = count;
             wishRecord.CreateDate = DateTime.Now;

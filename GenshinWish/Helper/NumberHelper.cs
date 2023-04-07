@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GenshinWish.Util
+namespace GenshinWish.Helper
 {
     public static class NumberHelper
     {

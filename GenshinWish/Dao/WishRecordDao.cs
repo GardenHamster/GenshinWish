@@ -16,9 +16,9 @@ namespace GenshinWish.Dao
             return Db.Queryable<WishRecordPO>().Where(o => o.MemberId == memberId).Sum(o => o.WishCount);
         }
 
-        public int getWishTimes(int memberId, WishType wishType)
+        public int getWishTimes(int memberId, PoolType poolType)
         {
-            return Db.Queryable<WishRecordPO>().Where(o => o.MemberId == memberId && o.WishType == wishType).Sum(o => o.WishCount);
+            return Db.Queryable<WishRecordPO>().Where(o => o.MemberId == memberId && o.PoolType == poolType).Sum(o => o.WishCount);
         }
 
         public int resetRecord(int memberId)

@@ -83,7 +83,7 @@ namespace GenshinWish.Service
 
         public Dictionary<int, UpItemBO> LoadCharacterPool(int authId)
         {
-            List<GoodsItemBO> itemList = goodsDao.getByWishType(authId, WishType.角色);
+            List<GoodsItemBO> itemList = goodsDao.getPoolItems(authId, PoolType.角色);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
             List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
@@ -110,7 +110,7 @@ namespace GenshinWish.Service
 
         public Dictionary<int, UpItemBO> LoadWeaponPool(int authId)
         {
-            List<GoodsItemBO> itemList = goodsDao.getByWishType(authId, WishType.武器);
+            List<GoodsItemBO> itemList = goodsDao.getPoolItems(authId, PoolType.武器);
             Dictionary<int, UpItemBO> upItemDic = new Dictionary<int, UpItemBO>();
             List<int> poolIndexList = itemList.Select(m => m.PoolIndex).Distinct().ToList();
             foreach (int poolIndex in poolIndexList)
@@ -258,23 +258,23 @@ namespace GenshinWish.Service
         /// 清理蛋池
         /// </summary>
         /// <param name="authId"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <returns></returns>
-        public int ClearPool(int authId, WishType wishType)
+        public int ClearPool(int authId, PoolType poolType)
         {
-            return goodsPoolDao.clearPool(authId, wishType);
+            return goodsPoolDao.clearPool(authId, poolType);
         }
 
         /// <summary>
         /// 清理蛋池
         /// </summary>
         /// <param name="authId"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <param name="poolIndex"></param>
         /// <returns></returns>
-        public int ClearPool(int authId, WishType wishType, int poolIndex)
+        public int ClearPool(int authId, PoolType poolType, int poolIndex)
         {
-            return goodsPoolDao.clearPool(authId, wishType, poolIndex);
+            return goodsPoolDao.clearPool(authId, poolType, poolIndex);
         }
 
         /// <summary>
@@ -291,10 +291,10 @@ namespace GenshinWish.Service
         /// </summary>
         /// <param name="goods"></param>
         /// <param name="authId"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <param name="poolIndex"></param>
         /// <returns></returns>
-        public void InsertGoodsPool(List<GoodsPO> goods, int authId, WishType wishType, int poolIndex)
+        public void InsertGoodsPool(List<GoodsPO> goods, int authId, PoolType poolType, int poolIndex)
         {
             foreach (var good in goods)
             {
@@ -302,7 +302,7 @@ namespace GenshinWish.Service
                 goodsPool.AuthId = authId;
                 goodsPool.PoolIndex = poolIndex;
                 goodsPool.GoodsId = good.Id;
-                goodsPool.WishType = wishType;
+                goodsPool.PoolType = poolType;
                 goodsPoolDao.Insert(goodsPool);
             }
         }

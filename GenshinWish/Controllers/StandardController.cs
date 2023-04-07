@@ -1,6 +1,7 @@
 ﻿using GenshinWish.Attribute;
 using GenshinWish.Cache;
 using GenshinWish.Exceptions;
+using GenshinWish.Helper;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
@@ -8,7 +9,6 @@ using GenshinWish.Models.PO;
 using GenshinWish.Service;
 using GenshinWish.Service.WishService;
 using GenshinWish.Type;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar.IOC;
 using System;
@@ -55,7 +55,7 @@ namespace GenshinWish.Controllers
             {
                 int poolIndex = 0;
                 int wishCount = 1;
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;
@@ -69,8 +69,8 @@ namespace GenshinWish.Controllers
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加祈愿记录
-                    receiveRecordService.AddRecords(wishResult, WishType.常驻, memberInfo.Id);//添加成员出货记录
+                    wishRecordService.AddRecord(memberInfo.Id, PoolType.常驻, poolIndex, wishCount);//添加祈愿记录
+                    receiveRecordService.AddRecords(wishResult, PoolType.常驻, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }
@@ -109,7 +109,7 @@ namespace GenshinWish.Controllers
             {
                 int poolIndex = 0;
                 int wishCount = 10;
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;
@@ -123,8 +123,8 @@ namespace GenshinWish.Controllers
                     List<MemberGoodsDto> memberGoods = memberGoodsService.GetMemberGoods(memberInfo.Id);
                     wishResult = baseWishService.GetWishResult(authorizePO, memberInfo, upItem, memberGoods, wishCount);
                     memberService.UpdateMember(memberInfo);//更新保底信息
-                    wishRecordService.AddRecord(memberInfo.Id, WishType.常驻, poolIndex, wishCount);//添加祈愿记录
-                    receiveRecordService.AddRecords(wishResult, WishType.常驻, memberInfo.Id);//添加成员出货记录
+                    wishRecordService.AddRecord(memberInfo.Id, PoolType.常驻, poolIndex, wishCount);//添加祈愿记录
+                    receiveRecordService.AddRecords(wishResult, PoolType.常驻, memberInfo.Id);//添加成员出货记录
                     memberGoodsService.AddMemberGoods(wishResult, memberGoods, memberInfo.Id);//更新背包物品数量
                     DbScoped.SugarScope.CommitTran();
                 }

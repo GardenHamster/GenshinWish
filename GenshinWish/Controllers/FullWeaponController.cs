@@ -1,6 +1,7 @@
 ﻿using GenshinWish.Attribute;
 using GenshinWish.Cache;
 using GenshinWish.Exceptions;
+using GenshinWish.Helper;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
@@ -8,7 +9,6 @@ using GenshinWish.Models.PO;
 using GenshinWish.Service;
 using GenshinWish.Service.WishService;
 using GenshinWish.Type;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar.IOC;
 using System;
@@ -55,7 +55,7 @@ namespace GenshinWish.Controllers
             try
             {
                 int wishCount = 1;
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;
@@ -105,7 +105,7 @@ namespace GenshinWish.Controllers
             try
             {
                 int wishCount = 10;
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 CheckImgWidth(imgWidth);
 
                 WishResultBO wishResult = null;

@@ -1,5 +1,6 @@
 ﻿using GenshinWish.Exceptions;
 using GenshinWish.Service.WishService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GenshinWish.Controllers
 {
@@ -13,6 +14,7 @@ namespace GenshinWish.Controllers
             this.baseWishService = baseWishService;
         }
 
+        [NonAction]
         protected void CheckImgWidth(int imgWidth)
         {
             if (imgWidth < 0 || imgWidth > 1920) throw new ParamException("图片宽度只能设定在0~1920之间");

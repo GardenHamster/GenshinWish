@@ -2,13 +2,13 @@
 using GenshinWish.Cache;
 using GenshinWish.Common;
 using GenshinWish.Exceptions;
+using GenshinWish.Helper;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
 using GenshinWish.Service;
 using GenshinWish.Type;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ namespace GenshinWish.Controllers
             try
             {
                 if (generateData == null || generateData.GoodsData.Count == 0) throw new ParamException("参数错误");
-                GoodsData goodsData = generateData.GoodsData.First();
+                GoodsDataDto goodsData = generateData.GoodsData.First();
                 string goodsName = goodsData.GoodsName.Trim();
                 GoodsPO dbGoods = goodsService.GetGoodsByName(goodsName);
                 if (dbGoods == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的物品");
@@ -82,7 +82,7 @@ namespace GenshinWish.Controllers
                 List<WishRecordBO> wishRecords = new List<WishRecordBO>();
                 for (int i = 0; i < generateData.GoodsData.Count; i++)
                 {
-                    GoodsData goodsData = generateData.GoodsData[i];
+                    GoodsDataDto goodsData = generateData.GoodsData[i];
                     string goodsName = goodsData.GoodsName.Trim();
                     GoodsPO dbGoods = goodsService.GetGoodsByName(goodsName);
                     if (dbGoods == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的物品");

@@ -1,11 +1,11 @@
 ﻿using GenshinWish.Common;
 using GenshinWish.Exceptions;
+using GenshinWish.Helper;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Models.VO;
 using GenshinWish.Type;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -17,12 +17,14 @@ namespace GenshinWish.Controllers
 {
     public class BaseController : ControllerBase
     {
+        [NonAction]
         protected string GetAuthCode()
         {
             return HttpContext.Request.Headers["authorzation"];
         }
 
-        protected void checkNullParam(params string[] paramArr)
+        [NonAction]
+        protected void CheckNullParam(params string[] paramArr)
         {
             if (paramArr == null) return;
             foreach (var item in paramArr)
@@ -40,6 +42,7 @@ namespace GenshinWish.Controllers
         /// <param name="toBase64"></param>
         /// <param name="imgWidth"></param>
         /// <returns></returns>
+        [NonAction]
         protected ApiWishResult CreateWishResult(UpItemBO upItem, WishResultBO wishResult, AuthorizeDto authorize, bool toBase64, int imgWidth)
         {
             ApiWishResult apiResult = new ApiWishResult();
@@ -52,11 +55,11 @@ namespace GenshinWish.Controllers
             apiResult.Standard90Surplus = wishResult.MemberInfo.Std90Surplus;
             apiResult.FullCharacter90Surplus = wishResult.MemberInfo.FullChar90Surplus;
             apiResult.FullWeapon80Surplus = wishResult.MemberInfo.FullWpn80Surplus;
-            apiResult.Star5Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray());
-            apiResult.Star4Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray());
-            apiResult.Star3Goods = ChangeToGoodsVO(wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray());
-            apiResult.Star5Up = ChangeToGoodsVO(upItem.Star5UpItems);
-            apiResult.Star4Up = ChangeToGoodsVO(upItem.Star4UpItems);
+            apiResult.Star5Goods = wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray().ToGoodsVO();
+            apiResult.Star4Goods = wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray().ToGoodsVO();
+            apiResult.Star3Goods = wishResult.WishRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray().ToGoodsVO();
+            apiResult.Star5Up = upItem.Star5UpItems.ToGoodsVO();
+            apiResult.Star4Up = upItem.Star4UpItems.ToGoodsVO();
 
             bool withSkin = authorize.Authorize.SkinRate > 0 && RandomHelper.getRandomBetween(1, 100) <= authorize.Authorize.SkinRate;
             using Bitmap wishImage = CreateWishImg(wishResult.SortWishRecords, withSkin, wishResult.MemberInfo.MemberCode);
@@ -83,14 +86,15 @@ namespace GenshinWish.Controllers
         /// <param name="SortRecords"></param>
         /// <param name="authorizeDto"></param>
         /// <returns></returns>
+        [NonAction]
         public ApiGenerateResult CreateGenerateResult(GenerateDataDto generateData, WishRecordBO[] SortRecords, AuthorizeDto authorizeDto)
         {
             ApiGenerateResult apiResult = new ApiGenerateResult();
             apiResult.WishCount = SortRecords.Count();
             apiResult.ApiDailyCallSurplus = authorizeDto.ApiCallSurplus;
-            apiResult.Star5Goods = ChangeToGoodsVO(SortRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray());
-            apiResult.Star4Goods = ChangeToGoodsVO(SortRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray());
-            apiResult.Star3Goods = ChangeToGoodsVO(SortRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray());
+            apiResult.Star5Goods = SortRecords.Where(m => m.GoodsItem.RareType == RareType.五星).ToArray().ToGoodsVO();
+            apiResult.Star4Goods = SortRecords.Where(m => m.GoodsItem.RareType == RareType.四星).ToArray().ToGoodsVO();
+            apiResult.Star3Goods = SortRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray().ToGoodsVO();
             using Bitmap wishImage = CreateWishImg(SortRecords, generateData.UseSkin, generateData.Uid);
 
             if (generateData.ToBase64)
@@ -115,62 +119,11 @@ namespace GenshinWish.Controllers
         /// <param name="withSkin"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
+        [NonAction]
         protected Bitmap CreateWishImg(WishRecordBO[] sortWishRecords, bool withSkin, string uid)
         {
             if (sortWishRecords.Count() == 1) return DrawHelper.createWishImg(sortWishRecords.First(), withSkin, uid);
             return DrawHelper.createWishImg(sortWishRecords, withSkin, uid);
-        }
-
-        /// <summary>
-        /// 转换为WishRecordVO
-        /// </summary>
-        /// <param name="recordList"></param>
-        /// <returns></returns>
-        protected List<WishRecordVO> ChangeToWishRecordVO(List<ReceiveRecordDto> recordList)
-        {
-            return recordList.Select(m => new WishRecordVO()
-            {
-                GoodsName = m.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.RareType),
-                WishType = Enum.GetName(typeof(WishType), m.WishType),
-                Cost = m.Cost,
-                CreateDate = m.CreateDate
-            }).ToList();
-        }
-
-        /// <summary>
-        /// 转换为GoodsVO
-        /// </summary>
-        /// <param name="wishRecords"></param>
-        /// <returns></returns>
-        protected List<GoodsVO> ChangeToGoodsVO(WishRecordBO[] wishRecords)
-        {
-            return wishRecords.Select(m => new GoodsVO()
-            {
-                Cost = m.Cost,
-                GoodsName = m.GoodsItem.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsItem.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsItem.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.GoodsItem.RareType),
-            }).ToList();
-        }
-
-        /// <summary>
-        /// 转换为GoodsVO
-        /// </summary>
-        /// <param name="goodsItems"></param>
-        /// <returns></returns>
-        protected List<GoodsVO> ChangeToGoodsVO(List<GoodsItemBO> goodsItems)
-        {
-            return goodsItems.Select(m => new GoodsVO()
-            {
-                GoodsName = m.GoodsName,
-                GoodsType = Enum.GetName(typeof(GoodsType), m.GoodsType),
-                GoodsSubType = Enum.GetName(typeof(GoodsSubType), m.GoodsSubType),
-                RareType = Enum.GetName(typeof(RareType), m.RareType)
-            }).ToList();
         }
 
     }

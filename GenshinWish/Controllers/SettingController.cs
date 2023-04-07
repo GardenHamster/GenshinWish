@@ -4,7 +4,6 @@ using System;
 using SqlSugar.IOC;
 using System.Linq;
 using GenshinWish.Service;
-using GenshinWish.Util;
 using GenshinWish.Type;
 using GenshinWish.Models.DTO;
 using GenshinWish.Attribute;
@@ -14,6 +13,7 @@ using GenshinWish.Common;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Cache;
+using GenshinWish.Helper;
 
 namespace GenshinWish.Controllers
 {
@@ -52,7 +52,7 @@ namespace GenshinWish.Controllers
             try
             {
                 int poolIndex = 0;
-                checkNullParam(memberCode, goodsName);
+                CheckNullParam(memberCode, goodsName);
                 AuthorizePO authorizePO = authDto.Authorize;
                 GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName.Trim());
                 if (goodsInfo == null) return ApiResult.GoodsNotFound;
@@ -92,7 +92,7 @@ namespace GenshinWish.Controllers
         {
             try
             {
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 AuthorizePO authorizePO = authDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null || memberInfo.AssignId == 0) return ApiResult.Success("未找到定轨信息");
@@ -152,9 +152,9 @@ namespace GenshinWish.Controllers
                 if (star4Goods.Count < 3) throw new ParamException("必须指定三个四星角色");
                 if (star4Goods.Count > 3) throw new ParamException("只能指定三个四星角色");
 
-                goodsService.ClearPool(authorizePO.Id, WishType.角色, poolDto.PoolIndex);
-                goodsService.InsertGoodsPool(star5Goods, authorizePO.Id, WishType.角色, poolDto.PoolIndex);
-                goodsService.InsertGoodsPool(star4Goods, authorizePO.Id, WishType.角色, poolDto.PoolIndex);
+                goodsService.ClearPool(authorizePO.Id, PoolType.角色, poolDto.PoolIndex);
+                goodsService.InsertGoodsPool(star5Goods, authorizePO.Id, PoolType.角色, poolDto.PoolIndex);
+                goodsService.InsertGoodsPool(star4Goods, authorizePO.Id, PoolType.角色, poolDto.PoolIndex);
 
                 return ApiResult.Success();
             }
@@ -201,9 +201,9 @@ namespace GenshinWish.Controllers
                 if (star4Goods.Count < 5) throw new ParamException("必须指定五个四星武器");
                 if (star4Goods.Count > 5) throw new ParamException("只能指定五个四星武器");
 
-                goodsService.ClearPool(authorizePO.Id, WishType.武器, 0);
-                goodsService.InsertGoodsPool(star5Goods, authorizePO.Id, WishType.武器, 0);
-                goodsService.InsertGoodsPool(star4Goods, authorizePO.Id, WishType.武器, 0);
+                goodsService.ClearPool(authorizePO.Id, PoolType.武器, 0);
+                goodsService.InsertGoodsPool(star5Goods, authorizePO.Id, PoolType.武器, 0);
+                goodsService.InsertGoodsPool(star4Goods, authorizePO.Id, PoolType.武器, 0);
 
                 return ApiResult.Success();
             }
@@ -232,7 +232,7 @@ namespace GenshinWish.Controllers
             try
             {
                 AuthorizePO authorizePO = authDto.Authorize;
-                goodsService.ClearPool(authorizePO.Id, WishType.角色);
+                goodsService.ClearPool(authorizePO.Id, PoolType.角色);
                 return ApiResult.Success();
             }
             catch (BaseException ex)
@@ -259,7 +259,7 @@ namespace GenshinWish.Controllers
             try
             {
                 AuthorizePO authorizePO = authDto.Authorize;
-                goodsService.ClearPool(authorizePO.Id, WishType.武器);
+                goodsService.ClearPool(authorizePO.Id, PoolType.武器);
                 return ApiResult.Success();
             }
             catch (BaseException ex)

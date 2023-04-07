@@ -1,4 +1,4 @@
-﻿using GenshinWish.Util;
+﻿using GenshinWish.Helper;
 using Quartz;
 using Quartz.Impl;
 using System;

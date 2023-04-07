@@ -15,7 +15,7 @@ namespace GenshinWish.Models.PO
         public int MemberId { get; set; }
 
         [SugarColumn(IsNullable = false, ColumnDescription = "蛋池类型")]
-        public WishType WishType { get; set; }
+        public PoolType PoolType { get; set; }
 
         [SugarColumn(IsNullable = false, ColumnDescription = "蛋池编号")]
         public int WishIndex { get; set; }

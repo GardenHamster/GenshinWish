@@ -30,15 +30,15 @@ namespace GenshinWish.Service
             wishDetail.Star3Count = memberGoodsDao.CountGoods(memberId, RareType.三星);
             wishDetail.Star4Count = memberGoodsDao.CountGoods(memberId, RareType.四星);
             wishDetail.Star5Count = memberGoodsDao.CountGoods(memberId, RareType.五星);
-            wishDetail.CharStar4Rate = receiveRecordDao.CountRate(memberId, WishType.角色, RareType.四星);
-            wishDetail.WpnStar4Rate = receiveRecordDao.CountRate(memberId, WishType.武器, RareType.四星);
-            wishDetail.StdStar4Rate = receiveRecordDao.CountRate(memberId, WishType.常驻, RareType.四星);
-            wishDetail.CharStar5Rate = receiveRecordDao.CountRate(memberId, WishType.角色, RareType.五星);
-            wishDetail.WpnStar5Rate = receiveRecordDao.CountRate(memberId, WishType.武器, RareType.五星);
-            wishDetail.StdStar5Rate = receiveRecordDao.CountRate(memberId, WishType.常驻, RareType.五星);
-            wishDetail.CharWishTimes = wishRecordDao.getWishTimes(memberId, WishType.角色);
-            wishDetail.WpnWishTimes = wishRecordDao.getWishTimes(memberId, WishType.武器);
-            wishDetail.StdWishTimes = wishRecordDao.getWishTimes(memberId, WishType.常驻);
+            wishDetail.CharStar4Rate = receiveRecordDao.CountRate(memberId, PoolType.角色, RareType.四星);
+            wishDetail.WpnStar4Rate = receiveRecordDao.CountRate(memberId, PoolType.武器, RareType.四星);
+            wishDetail.StdStar4Rate = receiveRecordDao.CountRate(memberId, PoolType.常驻, RareType.四星);
+            wishDetail.CharStar5Rate = receiveRecordDao.CountRate(memberId, PoolType.角色, RareType.五星);
+            wishDetail.WpnStar5Rate = receiveRecordDao.CountRate(memberId, PoolType.武器, RareType.五星);
+            wishDetail.StdStar5Rate = receiveRecordDao.CountRate(memberId, PoolType.常驻, RareType.五星);
+            wishDetail.CharWishTimes = wishRecordDao.getWishTimes(memberId, PoolType.角色);
+            wishDetail.WpnWishTimes = wishRecordDao.getWishTimes(memberId, PoolType.武器);
+            wishDetail.StdWishTimes = wishRecordDao.getWishTimes(memberId, PoolType.常驻);
             wishDetail.TotalWishTimes = wishRecordDao.getWishTimes(memberId);
             return wishDetail;
         }
@@ -90,12 +90,12 @@ namespace GenshinWish.Service
         /// 添加出货记录
         /// </summary>
         /// <param name="wishResult"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <param name="memberId"></param>
-        public void AddRecords(WishResultBO wishResult, WishType wishType, int memberId)
+        public void AddRecords(WishResultBO wishResult, PoolType poolType, int memberId)
         {
             var records = wishResult.WishRecords.Where(o => o.GoodsItem.RareType == RareType.五星 || o.GoodsItem.RareType == RareType.四星).ToList();
-            foreach (var record in records) AddRecords(wishResult, record, wishType, memberId);
+            foreach (var record in records) AddRecords(wishResult, record, poolType, memberId);
         }
 
         /// <summary>
@@ -103,14 +103,14 @@ namespace GenshinWish.Service
         /// </summary>
         /// <param name="wishResult"></param>
         /// <param name="wishRecord"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <param name="memberId"></param>
-        private void AddRecords(WishResultBO wishResult, WishRecordBO wishRecord, WishType wishType, int memberId)
+        private void AddRecords(WishResultBO wishResult, WishRecordBO wishRecord, PoolType poolType, int memberId)
         {
             ReceiveRecordPO receiveRecord = new ReceiveRecordPO();
             receiveRecord.MemberId = memberId;
             receiveRecord.GoodsId = wishRecord.GoodsItem.GoodsID;
-            receiveRecord.WishType = wishType;
+            receiveRecord.PoolType = poolType;
             receiveRecord.PoolIndex = wishResult.PoolIndex;
             receiveRecord.Cost = wishRecord.Cost;
             receiveRecord.CreateDate = DateTime.Now;

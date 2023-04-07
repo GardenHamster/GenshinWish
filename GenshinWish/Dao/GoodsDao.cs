@@ -21,27 +21,27 @@ namespace GenshinWish.Dao
             return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { goodsType });
         }
 
-        public List<GoodsItemBO> getByWishType(int authId, WishType wishType)
-        {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
-            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
-            sqlBuilder.Append(" where pg.AuthId=@authId and pg.WishType=@WishType and g.isDisable=0");
-            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, WishType = wishType });
-        }
-
-        public List<GoodsItemBO> getByWishType(int authId, WishType wishType, int poolIndex)
-        {
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
-            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
-            sqlBuilder.Append(" where pg.AuthId=@authId and pg.WishType=@WishType and pg.PoolIndex=@poolIndex and g.isDisable=0");
-            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, WishType = wishType, poolIndex });
-        }
-
         public GoodsPO getByGoodsName(string goodsName)
         {
             return Db.Queryable<GoodsPO>().Where(o => o.GoodsName == goodsName && o.IsDisable == false).First();
+        }
+
+        public List<GoodsItemBO> getPoolItems(int authId, PoolType poolType)
+        {
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
+            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
+            sqlBuilder.Append(" where pg.AuthId=@authId and pg.PoolType=@PoolType and g.isDisable=0");
+            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, PoolType = poolType });
+        }
+
+        public List<GoodsItemBO> getPoolItems(int authId, PoolType poolType, int poolIndex)
+        {
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.Append(" select g.GoodsName,g.RareType,g.GoodsType,g.GoodsSubType,pg.PoolIndex,pg.GoodsId from pool_goods pg");
+            sqlBuilder.Append(" inner join goods g on g.id=pg.goodsId");
+            sqlBuilder.Append(" where pg.AuthId=@authId and pg.PoolType=@PoolType and pg.PoolIndex=@poolIndex and g.isDisable=0");
+            return Db.Ado.SqlQuery<GoodsItemBO>(sqlBuilder.ToString(), new { authId, PoolType = poolType, poolIndex });
         }
 
         public List<GoodsPO> getStandardGoods(GoodsType goodsType, RareType rareType)

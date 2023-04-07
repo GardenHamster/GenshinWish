@@ -18,7 +18,7 @@ namespace GenshinWish.Models.DTO
 
         public RareType RareType { get; set; }
 
-        public WishType WishType { get; set; }
+        public PoolType PoolType { get; set; }
 
         public int Cost { get; set; }
 

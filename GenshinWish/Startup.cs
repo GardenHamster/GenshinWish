@@ -1,10 +1,10 @@
 using GenshinWish.Attribute;
 using GenshinWish.Common;
 using GenshinWish.Dao;
+using GenshinWish.Helper;
 using GenshinWish.Service;
 using GenshinWish.Service.WishService;
 using GenshinWish.Timer;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

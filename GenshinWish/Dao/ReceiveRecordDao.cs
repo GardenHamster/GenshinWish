@@ -14,16 +14,16 @@ namespace GenshinWish.Dao
         /// 统计某个成员某个蛋池类型某个星级物品的出货数量
         /// </summary>
         /// <param name="memberId"></param>
-        /// <param name="wishType"></param>
+        /// <param name="poolType"></param>
         /// <param name="rareType"></param>
         /// <returns></returns>
-        public int CountRate(int memberId, WishType wishType, RareType rareType)
+        public int CountRate(int memberId, PoolType poolType, RareType rareType)
         {
             StringBuilder sqlBuilder = new StringBuilder();
             sqlBuilder.Append(" select count(mg.Id) count from member_goods mg");
             sqlBuilder.Append(" inner join goods g on g.Id=mg.GoodsId");
-            sqlBuilder.Append(" where mg.MemberId=@MemberId and mg.AuthId=@AuthId and g.RareType=@RareType and mg.WishType=@WishType");
-            return Db.Ado.SqlQuery<int>(sqlBuilder.ToString(), new { MemberId = memberId, WishType = wishType, RareType = rareType }).First();
+            sqlBuilder.Append(" where mg.MemberId=@MemberId and mg.AuthId=@AuthId and g.RareType=@RareType and mg.PoolType=@PoolType");
+            return Db.Ado.SqlQuery<int>(sqlBuilder.ToString(), new { MemberId = memberId, PoolType = poolType, RareType = rareType }).First();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace GenshinWish.Dao
         public List<ReceiveRecordDto> GetRecords(int memberId, RareType rareType, int top)
         {
             StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.Append(" select mg.GoodsId,g.GoodsName,g.GoodsType,g.GoodsSubType,g.RareType,mg.WishType,mg.Cost,mg.CreateDate from member_goods mg");
+            sqlBuilder.Append(" select mg.GoodsId,g.GoodsName,g.GoodsType,g.GoodsSubType,g.RareType,mg.PoolType,mg.Cost,mg.CreateDate from member_goods mg");
             sqlBuilder.Append(" inner join goods g on g.Id=mg.GoodsId");
             sqlBuilder.Append(" where mg.MemberId=@MemberId and mg.AuthId=@AuthId and g.RareType=@RareType");
             sqlBuilder.Append(" order by mg.CreateDate desc limit @Top");

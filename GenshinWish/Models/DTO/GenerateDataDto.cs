@@ -7,7 +7,7 @@ namespace GenshinWish.Models.DTO
         /// <summary>
         /// 物品列表
         /// </summary>
-        public List<GoodsData> GoodsData { get; set; }
+        public List<GoodsDataDto> GoodsData { get; set; }
 
         /// <summary>
         /// uid
@@ -30,7 +30,7 @@ namespace GenshinWish.Models.DTO
         public int ImgWidth { get; set; }
     }
 
-    public class GoodsData
+    public class GoodsDataDto
     {
         /// <summary>
         /// 物品全称

@@ -1,5 +1,5 @@
 ﻿using GenshinWish.Common;
-using GenshinWish.Util;
+using GenshinWish.Helper;
 using Quartz;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using GenshinWish.Dao;
+using GenshinWish.Helper;
 using GenshinWish.Models.PO;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Http;
 using System;
 

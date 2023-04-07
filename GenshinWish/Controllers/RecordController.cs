@@ -1,6 +1,7 @@
 ﻿using GenshinWish.Attribute;
 using GenshinWish.Cache;
 using GenshinWish.Exceptions;
+using GenshinWish.Helper;
 using GenshinWish.Models.Api;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
@@ -8,7 +9,6 @@ using GenshinWish.Models.PO;
 using GenshinWish.Models.VO;
 using GenshinWish.Service;
 using GenshinWish.Type;
-using GenshinWish.Util;
 using Microsoft.AspNetCore.Mvc;
 using SqlSugar.IOC;
 using System;
@@ -62,8 +62,8 @@ namespace GenshinWish.Controllers
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
+                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                         }
                     }),
                     character = charDic.Select(m => new
@@ -71,8 +71,8 @@ namespace GenshinWish.Controllers
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
+                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                         }
                     }),
                     standard = stdDic.Select(m => new
@@ -80,8 +80,8 @@ namespace GenshinWish.Controllers
                         poolIndex = m.Key,
                         poolInfo = new
                         {
-                            Star5UpList = ChangeToGoodsVO(m.Value.Star5UpItems),
-                            Star4UpList = ChangeToGoodsVO(m.Value.Star4UpItems)
+                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                         }
                     }),
                 });
@@ -110,7 +110,7 @@ namespace GenshinWish.Controllers
         {
             try
             {
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 AuthorizePO authorizePO = authorizeDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null) return ApiResult.Success();
@@ -194,7 +194,7 @@ namespace GenshinWish.Controllers
         {
             try
             {
-                checkNullParam(memberCode);
+                CheckNullParam(memberCode);
                 AuthorizePO authorizePO = authorizeDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null) return ApiResult.Success();
@@ -202,8 +202,8 @@ namespace GenshinWish.Controllers
                 var star4Records = receiveRecordService.GetRecords(memberInfo.Id, RareType.四星, 20);
                 return ApiResult.Success(new
                 {
-                    star5 = ChangeToWishRecordVO(star5Records),
-                    star4 = ChangeToWishRecordVO(star4Records),
+                    star5 = star5Records.ToWishRecordVO(),
+                    star4 = star4Records.ToWishRecordVO(),
                 });
             }
             catch (BaseException ex)

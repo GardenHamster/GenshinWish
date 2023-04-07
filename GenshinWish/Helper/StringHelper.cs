@@ -1,4 +1,4 @@
-﻿namespace GenshinWish.Util
+﻿namespace GenshinWish.Helper
 {
     public static class StringHelper
     {
