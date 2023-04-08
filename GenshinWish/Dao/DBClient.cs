@@ -17,11 +17,12 @@ namespace GenshinWish.Dao
                 DbScoped.SugarScope.DbMaintenance.CreateDatabase();
                 DbScoped.SugarScope.CodeFirst.InitTables(typeof(AuthorizePO));
                 DbScoped.SugarScope.CodeFirst.InitTables(typeof(GoodsPO));
+                DbScoped.SugarScope.CodeFirst.InitTables(typeof(GoodsPoolPO));
                 DbScoped.SugarScope.CodeFirst.InitTables(typeof(MemberGoodsPO));
                 DbScoped.SugarScope.CodeFirst.InitTables(typeof(MemberPO));
-                DbScoped.SugarScope.CodeFirst.InitTables(typeof(GoodsPoolPO));
-                DbScoped.SugarScope.CodeFirst.InitTables(typeof(WishRecordPO));
+                DbScoped.SugarScope.CodeFirst.InitTables(typeof(ReceiveRecordPO));
                 DbScoped.SugarScope.CodeFirst.InitTables(typeof(RequestRecordPO));
+                DbScoped.SugarScope.CodeFirst.InitTables(typeof(WishRecordPO));
             }
             catch (Exception ex)
             {

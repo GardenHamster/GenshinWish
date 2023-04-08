@@ -4,6 +4,7 @@ using System;
 namespace GenshinWish.Models.PO
 {
     [SugarTable("request_record")]
+    [SugarIndex("index_rr_AuthId", nameof(AuthId), OrderByType.Asc)]
     public class RequestRecordPO : BasePO
     {
         [SugarColumn(IsNullable = false, ColumnDescription = "授权Id")]

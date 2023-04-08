@@ -16,11 +16,11 @@ namespace GenshinWish.Models.DTO
 
         public RareType RareType { get; set; }
 
-        public int RareCount { get; set; }
+        public int ReceiveCount { get; set; }
 
-        public int TotalWishTimes { get; set; }
+        public int WishTimes { get; set; }
 
-        public double RareRate { get; set; }
+        public double ReceiveRate { get; set; }
 
     }
 }

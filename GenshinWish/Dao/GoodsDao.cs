@@ -22,7 +22,14 @@ namespace GenshinWish.Dao
         {
             return Db.Queryable<GoodsPO>()
             .Where(g => g.GoodsType == goodsType && g.IsDisable == false)
-            .Select(g => new GoodsItemBO(g)).ToList();
+            .Select(g => new GoodsItemBO
+            {
+                GoodsID = g.Id,
+                GoodsName = g.GoodsName,
+                RareType = g.RareType,
+                GoodsType = g.GoodsType,
+                GoodsSubType = g.GoodsSubType
+            }).ToList();
         }
 
         public List<GoodsPO> getStandardGoods(GoodsType goodsType, RareType rareType)

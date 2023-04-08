@@ -66,11 +66,11 @@ namespace GenshinWish.Service
         private RareRankingVO ToRareRanking(Models.DTO.LuckRankingDto luckRankingDTO)
         {
             RareRankingVO rareRankingVO = new RareRankingVO();
-            rareRankingVO.TotalWishTimes = luckRankingDTO.TotalWishTimes;
+            rareRankingVO.TotalWishTimes = luckRankingDTO.WishTimes;
             rareRankingVO.MemberCode = luckRankingDTO.MemberCode;
             rareRankingVO.MemberName = luckRankingDTO.MemberName;
-            rareRankingVO.Count = luckRankingDTO.RareCount;
-            rareRankingVO.Rate = Math.Floor(luckRankingDTO.RareRate * 100 * 1000) / 1000;
+            rareRankingVO.Count = luckRankingDTO.ReceiveCount;
+            rareRankingVO.Rate = Math.Floor(luckRankingDTO.ReceiveRate * 100 * 1000) / 1000;
             return rareRankingVO;
         }
 

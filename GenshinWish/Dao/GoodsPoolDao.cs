@@ -1,5 +1,6 @@
 ﻿using GenshinWish.Models.BO;
 using GenshinWish.Models.PO;
+using GenshinWish.Models.VO;
 using GenshinWish.Type;
 using System.Collections.Generic;
 
@@ -17,7 +18,15 @@ namespace GenshinWish.Dao
             return Db.Queryable<GoodsPoolPO>()
             .InnerJoin<GoodsPO>((p, g) => p.GoodsId == g.Id)
             .Where((p, g) => p.AuthId == authId && p.PoolType == poolType && g.IsDisable == false)
-            .Select((p, g) => new PoolItemBO(p, g)).ToList();
+            .Select((p, g) => new PoolItemBO
+            {
+                GoodsID = g.Id,
+                GoodsName = g.GoodsName,
+                RareType = g.RareType,
+                GoodsType = g.GoodsType,
+                GoodsSubType = g.GoodsSubType,
+                PoolIndex = p.PoolIndex
+            }).ToList();
         }
 
         public List<PoolItemBO> getPoolItems(int authId, PoolType poolType, int poolIndex)
@@ -25,7 +34,15 @@ namespace GenshinWish.Dao
             return Db.Queryable<GoodsPoolPO>()
             .InnerJoin<GoodsPO>((p, g) => p.GoodsId == g.Id)
             .Where((p, g) => p.AuthId == authId && p.PoolType == poolType && p.PoolIndex == poolIndex && g.IsDisable == false)
-            .Select((p, g) => new PoolItemBO(p, g)).ToList();
+            .Select((p, g) => new PoolItemBO
+            {
+                GoodsID = g.Id,
+                GoodsName = g.GoodsName,
+                RareType = g.RareType,
+                GoodsType = g.GoodsType,
+                GoodsSubType = g.GoodsSubType,
+                PoolIndex = p.PoolIndex
+            }).ToList();
         }
 
         public int clearPool(int authId, PoolType poolType, int poolIndex)
