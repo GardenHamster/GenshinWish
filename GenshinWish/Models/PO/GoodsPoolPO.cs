@@ -12,11 +12,11 @@ namespace GenshinWish.Models.PO
         [SugarColumn(IsNullable = false, ColumnDescription = "蛋池类型")]
         public PoolType PoolType { get; set; }
 
-        [SugarColumn(IsNullable = false, DefaultValue = "0", ColumnDescription = "蛋池编号，用于标识多卡池")]
-        public int PoolIndex { get; set; }
-
         [SugarColumn(IsNullable = false, ColumnDescription = "物品ID")]
         public int GoodsId { get; set; }
+
+        [SugarColumn(IsNullable = false, DefaultValue = "0", ColumnDescription = "蛋池编号，用于标识多卡池")]
+        public int PoolIndex { get; set; }
 
     }
 }

@@ -52,8 +52,7 @@ namespace GenshinWish.Controllers
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { ApiLimit.Yes })]
         public ApiResult Once([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
-            int poolIndex = 0;
-            int wishCount = 1;
+            int poolIndex = 0, wishCount = 1;
             return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
         }
 
@@ -70,8 +69,7 @@ namespace GenshinWish.Controllers
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { ApiLimit.Yes })]
         public ApiResult Ten([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
-            int poolIndex = 0;
-            int wishCount = 10;
+            int poolIndex = 0, wishCount = 10;
             return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
         }
 
@@ -86,13 +84,12 @@ namespace GenshinWish.Controllers
         /// <returns></returns>
         public ApiResult Hundred([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
-            int poolIndex = 0;
-            int wishCount = 100;
+            int poolIndex = 0, wishCount = 100;
             return Wish(authorizeDto, memberCode, memberName, toBase64, imgWidth, poolIndex, wishCount);
         }
 
         /// <summary>
-        /// 祈愿
+        /// 祈愿函数
         /// </summary>
         /// <param name="authorizeDto"></param>
         /// <param name="memberCode"></param>
