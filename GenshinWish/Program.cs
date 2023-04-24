@@ -2,7 +2,6 @@ using GenshinWish.Attribute;
 using GenshinWish.Common;
 using GenshinWish.Dao;
 using GenshinWish.Helper;
-using GenshinWish.Models.DTO;
 using GenshinWish.Service;
 using GenshinWish.Service.WishService;
 using GenshinWish.Timer;

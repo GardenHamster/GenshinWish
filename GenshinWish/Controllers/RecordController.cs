@@ -10,7 +10,6 @@ using GenshinWish.Models.VO;
 using GenshinWish.Service;
 using GenshinWish.Type;
 using Microsoft.AspNetCore.Mvc;
-using SqlSugar.IOC;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -18,7 +18,14 @@ namespace GenshinWish.Dao
             return Db.Queryable<MemberGoodsPO>()
             .InnerJoin<GoodsPO>((mg, g) => mg.GoodsId == g.Id)
             .Where((mg, g) => mg.MemberId == memberId)
-            .Select((mg, g) => new MemberGoodsBO(mg, g)).ToList();
+            .Select((mg, g) => new MemberGoodsBO
+            {
+                GoodsId = g.Id,
+                GoodsName = g.GoodsName,
+                GoodsType = g.GoodsType,
+                RareType = g.RareType,
+                Count = mg.Count
+            }).ToList();
         }
 
         /// <summary>

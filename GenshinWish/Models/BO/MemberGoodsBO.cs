@@ -19,14 +19,5 @@ namespace GenshinWish.Models.DTO
 
         public int Count { get; set; }
 
-        public MemberGoodsBO(MemberGoodsPO memberGoods, GoodsPO goods)
-        {
-            this.GoodsId = goods.Id;
-            this.GoodsName = goods.GoodsName;
-            this.GoodsType = goods.GoodsType;
-            this.RareType = goods.RareType;
-            this.Count = memberGoods.Count;
-        }
-
     }
 }
