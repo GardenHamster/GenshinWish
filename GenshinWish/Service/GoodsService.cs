@@ -1,8 +1,11 @@
 ﻿using GenshinWish.Cache;
+using GenshinWish.Common;
 using GenshinWish.Dao;
 using GenshinWish.Helper;
 using GenshinWish.Models.BO;
+using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
+using GenshinWish.Models.VO;
 using GenshinWish.Type;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +50,28 @@ namespace GenshinWish.Service
         public List<GoodsPO> GetGoodsList()
         {
             return goodsDao.getGoodsList();
+        }
+
+        /// <summary>
+        /// 从InitData.json中同步物品信息
+        /// </summary>
+        /// <param name="initData"></param>
+        public void SyncGoods(InitDataDto initData)
+        {
+            if (initData is null) return;
+            var dbGoodsList = GetGoodsList();
+            var syGoodsList = initData.Goods;
+            foreach (var item in syGoodsList)
+            {
+                if (dbGoodsList.Where(o => o.Id == item.Id).Any())
+                {
+                    goodsDao.Update(item);
+                }
+                else
+                {
+                    goodsDao.Insert(item);
+                }
+            }
         }
 
         /// <summary>

@@ -82,6 +82,8 @@ namespace GenshinWish.Controllers
         /// <param name="toBase64"></param>
         /// <param name="imgWidth"></param>
         /// <returns></returns>
+        [HttpGet]
+        [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { ApiLimit.Yes })]
         public ApiResult Hundred([FromForm] AuthorizeDto authorizeDto, string memberCode, string memberName = "", bool toBase64 = false, int imgWidth = 0)
         {
             int poolIndex = 0, wishCount = 100;

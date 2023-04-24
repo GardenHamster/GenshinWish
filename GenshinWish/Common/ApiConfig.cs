@@ -3,6 +3,11 @@
     public static class ApiConfig
     {
         /// <summary>
+        /// 排行统计缓存时间(分钟)
+        /// </summary>
+        public const int RankingCacheMinutes = 5;
+
+        /// <summary>
         /// 公用授权码
         /// </summary>
         public static string PublicAuthCode = "theresa3rd";
@@ -26,11 +31,6 @@
         /// 祈愿结果图片http路径
         /// </summary>
         public static string ImgHttpUrl = "";
-
-        /// <summary>
-        /// 排行统计缓存时间(分钟)
-        /// </summary>
-        public static int RankingCacheMinutes = 5;
 
     }
 }

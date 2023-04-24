@@ -99,7 +99,7 @@ namespace GenshinWish.Controllers
         /// <param name="imgWidth"></param>
         /// <param name="wishCount"></param>
         /// <returns></returns>
-        public ApiResult Wish(AuthorizeDto authorizeDto, string memberCode, string memberName, bool toBase64, int imgWidth, int wishCount)
+        private ApiResult Wish(AuthorizeDto authorizeDto, string memberCode, string memberName, bool toBase64, int imgWidth, int wishCount)
         {
             try
             {
