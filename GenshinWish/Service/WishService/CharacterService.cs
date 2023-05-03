@@ -2,7 +2,6 @@
 using GenshinWish.Exceptions;
 using GenshinWish.Helper;
 using GenshinWish.Models.BO;
-using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
 using GenshinWish.Type;
 using System;

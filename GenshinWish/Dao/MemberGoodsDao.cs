@@ -1,4 +1,4 @@
-﻿using GenshinWish.Models.DTO;
+﻿using GenshinWish.Models.BO;
 using GenshinWish.Models.PO;
 using GenshinWish.Type;
 using System.Collections.Generic;

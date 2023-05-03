@@ -44,15 +44,15 @@ namespace GenshinWish.Service
             return wishDetail;
         }
 
-        public Models.VO.LuckRankingVO GetLuckRanking(int authId, int days, int top)
+        public LuckRankingVO GetLuckRanking(int authId, int days, int top)
         {
-            Models.VO.LuckRankingVO luckRankingCache = DataCache.GetLuckRankingCache(authId);
+            var luckRankingCache = DataCache.GetLuckRankingCache(authId);
             if (luckRankingCache != null) return luckRankingCache;
             DateTime startDate = DateTime.Now.AddDays(-1 * days);
             DateTime endDate = DateTime.Now;
             var star5RankingList = receiveRecordDao.GetLuckRanking(authId, RareType.五星, startDate, endDate, top);
             var star4RankingList = receiveRecordDao.GetLuckRanking(authId, RareType.四星, startDate, endDate, top);
-            var luckRanking = new Models.VO.LuckRankingVO();
+            var luckRanking = new LuckRankingVO();
             luckRanking.Top = top;
             luckRanking.CountDay = days;
             luckRanking.StartTime = startDate.ToTimeStamp();
@@ -64,14 +64,14 @@ namespace GenshinWish.Service
         }
 
 
-        private RareRankingVO ToRareRanking(Models.DTO.LuckRankingDto luckRankingDTO)
+        private RareRankingVO ToRareRanking(LuckRankingDto luckRankingDTO)
         {
             RareRankingVO rareRankingVO = new RareRankingVO();
             rareRankingVO.TotalWishTimes = luckRankingDTO.WishTimes;
             rareRankingVO.MemberCode = luckRankingDTO.MemberCode;
             rareRankingVO.MemberName = luckRankingDTO.MemberName;
             rareRankingVO.Count = luckRankingDTO.ReceiveCount;
-            rareRankingVO.Rate = Math.Floor(luckRankingDTO.ReceiveRate * 100 * 1000) / 1000;
+            rareRankingVO.Rate = Math.Floor(luckRankingDTO.ReceiveRate * 100 * 10000) / 10000;
             return rareRankingVO;
         }
 

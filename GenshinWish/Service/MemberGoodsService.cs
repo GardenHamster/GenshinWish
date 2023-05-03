@@ -1,6 +1,5 @@
 ﻿using GenshinWish.Dao;
 using GenshinWish.Models.BO;
-using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
 using System.Collections.Generic;
 using System.Linq;

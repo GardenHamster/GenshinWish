@@ -155,7 +155,7 @@ namespace GenshinWish.Controllers
             try
             {
                 int top = 20;
-                int days = 7;
+                int days = 3;
                 AuthorizePO authorizePO = authorizeDto.Authorize;
                 LuckRankingVO luckRankingVO = receiveRecordService.GetLuckRanking(authorizePO.Id, days, top);
                 return ApiResult.Success(luckRankingVO);
