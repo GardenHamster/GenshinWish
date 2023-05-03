@@ -1,5 +1,6 @@
 ﻿using GenshinWish.Cache;
 using GenshinWish.Dao;
+using GenshinWish.Helper;
 using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Models.PO;
@@ -54,8 +55,8 @@ namespace GenshinWish.Service
             var luckRanking = new Models.VO.LuckRankingVO();
             luckRanking.Top = top;
             luckRanking.CountDay = days;
-            luckRanking.StartDate = startDate;
-            luckRanking.EndDate = endDate;
+            luckRanking.StartTime = startDate.ToTimeStamp();
+            luckRanking.EndTime = endDate.ToTimeStamp();
             luckRanking.Star5Ranking = star5RankingList.Select(m => ToRareRanking(m)).ToList();
             luckRanking.Star4Ranking = star4RankingList.Select(m => ToRareRanking(m)).ToList();
             DataCache.SetLuckRankingCache(authId, luckRanking);

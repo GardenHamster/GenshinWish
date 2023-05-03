@@ -59,29 +59,20 @@ namespace GenshinWish.Controllers
                     weapon = wpnDic.Select(m => new
                     {
                         poolIndex = m.Key,
-                        poolInfo = new
-                        {
-                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
-                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
-                        }
+                        Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                        Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                     }),
                     character = charDic.Select(m => new
                     {
                         poolIndex = m.Key,
-                        poolInfo = new
-                        {
-                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
-                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
-                        }
+                        Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                        Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                     }),
                     standard = stdDic.Select(m => new
                     {
                         poolIndex = m.Key,
-                        poolInfo = new
-                        {
-                            Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
-                            Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
-                        }
+                        Star5UpList = m.Value.Star5UpItems.ToGoodsVO(),
+                        Star4UpList = m.Value.Star4UpItems.ToGoodsVO()
                     }),
                 });
             }
@@ -105,7 +96,7 @@ namespace GenshinWish.Controllers
         /// <returns></returns>
         [HttpGet]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult GetMemberWishDetail([FromForm] AuthorizeDto authorizeDto, string memberCode)
+        public ApiResult GetWishDetail([FromForm] AuthorizeDto authorizeDto, string memberCode)
         {
             try
             {
@@ -189,7 +180,7 @@ namespace GenshinWish.Controllers
         /// <returns></returns>
         [HttpGet]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult GetMemberWishRecords([FromForm] AuthorizeDto authorizeDto, string memberCode)
+        public ApiResult GetWishRecord([FromForm] AuthorizeDto authorizeDto, string memberCode)
         {
             try
             {
@@ -223,7 +214,7 @@ namespace GenshinWish.Controllers
         /// <returns></returns>
         [HttpGet]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public InitDataDto GetInitDatas([FromForm] AuthorizeDto authorizeDto)
+        public InitDataDto GetInitData([FromForm] AuthorizeDto authorizeDto)
         {
             try
             {

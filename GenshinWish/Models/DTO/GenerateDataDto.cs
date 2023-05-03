@@ -18,16 +18,6 @@ namespace GenshinWish.Models.DTO
         /// 是否使用皮肤
         /// </summary>
         public bool UseSkin { get; set; }
-
-        /// <summary>
-        /// 转base64
-        /// </summary>
-        public bool ToBase64 { get; set; }
-
-        /// <summary>
-        /// 图片宽度0~1920
-        /// </summary>
-        public int ImgWidth { get; set; }
     }
 
     public class GoodsDataDto

@@ -149,7 +149,7 @@ namespace GenshinWish.Models.Api
         {
             get
             {
-                return new ApiResult(ResultCode.PermissionDenied, "权限不足，请参考贴子获取独立授权码");
+                return new ApiResult(ResultCode.PermissionDenied, "权限不足");
             }
         }
 

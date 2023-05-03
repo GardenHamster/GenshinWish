@@ -17,8 +17,8 @@ namespace GenshinWish.Service
 
         public int GetRequestTimesToday(int authId)
         {
-            DateTime startTime = DateTimeHelper.getTodayStart();
-            DateTime endTime = DateTimeHelper.getTodayEnd();
+            DateTime startTime = DateTimeHelper.GetTodayStart();
+            DateTime endTime = DateTimeHelper.GetTodayEnd();
             return requestRecordDao.getRequestTimes(authId, startTime, endTime);
         }
 

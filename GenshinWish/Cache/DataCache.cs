@@ -1,4 +1,5 @@
 ﻿using GenshinWish.Common;
+using GenshinWish.Helper;
 using GenshinWish.Models.VO;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace GenshinWish.Cache
             if (RankingCache.ContainsKey(authId) == false) return null;
             if (RankingCache[authId] == null) return null;
             LuckRankingVO luckRankingVO = RankingCache[authId];
-            if (luckRankingVO.CacheDate.AddMinutes(ApiConfig.RankingCacheMinutes) < DateTime.Now) return null;
+            if (luckRankingVO.CacheTime + ApiConfig.RankingCacheMinutes * 60 < DateTimeHelper.GetTimeStamp()) return null;
             return luckRankingVO;
         }
 
@@ -33,7 +34,7 @@ namespace GenshinWish.Cache
         /// <param name="luckRankingVO"></param>
         public static void SetLuckRankingCache(int authId, LuckRankingVO luckRankingVO)
         {
-            luckRankingVO.CacheDate = DateTime.Now;
+            luckRankingVO.CacheTime = DateTimeHelper.GetTimeStamp();
             RankingCache[authId] = luckRankingVO;
         }
 

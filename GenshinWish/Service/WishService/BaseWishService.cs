@@ -18,8 +18,8 @@ namespace GenshinWish.Service.WishService
         /// <returns></returns>
         public WishRecordBO[] SortRecords(WishRecordBO[] records)
         {
-            //先按物品种类排序（0->2），相同种类的物品之间按稀有度倒序排序（5->1）,最后New排在前面
-            return records.OrderBy(c => c.GoodsItem.GoodsType).ThenByDescending(c => c.GoodsItem.RareType).ThenBy(c => c.OwnedCount).ToArray();
+            //先按稀有度倒序排序（5->1），然后按角色->武器种类排序（0->2），最后New排在前面
+            return records.OrderByDescending(c => c.GoodsItem.RareType).ThenBy(c => c.GoodsItem.GoodsType).ThenBy(c => c.OwnedCount).ToArray();
         }
 
         /// <summary>

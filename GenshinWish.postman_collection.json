@@ -1,0 +1,1171 @@
+{
+	"info": {
+		"_postman_id": "95c90516-bf89-49da-976b-712bc24fae07",
+		"name": "GenshinWish",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "常驻单抽",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Standard/Once?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Standard",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "常驻十连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Standard/Ten?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Standard",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "常驻百连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Standard/Hundred?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Standard",
+						"Hundred"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "角色单抽",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Character/Once?memberCode=123456&memberName=花园仓鼠&poolIndex=0",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Character",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "poolIndex",
+							"value": "0"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "角色十连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Character/Ten?memberCode=123456&memberName=花园仓鼠&poolIndex=0",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Character",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "poolIndex",
+							"value": "0"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "角色百连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Character/Hundred?memberCode=123456&memberName=花园仓鼠&poolIndex=0",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Character",
+						"Hundred"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "poolIndex",
+							"value": "0"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全色单抽",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullCharacter/Once?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullCharacter",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全色十连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullCharacter/Ten?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullCharacter",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全色百连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullCharacter/Hundred?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullCharacter",
+						"Hundred"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "武器单抽",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Weapon/Once?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Weapon",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "武器十连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Weapon/Ten?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Weapon",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "武器百连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Weapon/Hundred?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Weapon",
+						"Hundred"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全武单抽",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullWeapon/Once?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullWeapon",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全武十连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullWeapon/Ten?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullWeapon",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "全武百连",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/FullWeapon/Hundred?memberCode=123456&memberName=花园仓鼠",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"FullWeapon",
+						"Hundred"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "tobase64",
+							"value": "true",
+							"disabled": true
+						},
+						{
+							"key": "imgWidth",
+							"value": "1000",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取蛋池",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Record/GetPoolInfo",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Record",
+						"GetPoolInfo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取祈愿详情",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Record/GetWishDetail?memberCode=123456",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Record",
+						"GetWishDetail"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取欧气排行",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Record/GetLuckRanking",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Record",
+						"GetLuckRanking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取祈愿记录",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Record/GetWishRecord?memberCode=123456",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Record",
+						"GetWishRecord"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取初始数据",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Record/GetInitData",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Record",
+						"GetInitData"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "获取定轨",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/GetMemberAssign?memberCode=123456",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"GetMemberAssign"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "定轨武器",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/SetMemberAssign?memberCode=123456&memberName=花园仓鼠&goodsName=雾切之回光",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"SetMemberAssign"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						},
+						{
+							"key": "memberName",
+							"value": "花园仓鼠"
+						},
+						{
+							"key": "goodsName",
+							"value": "雾切之回光"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "配置角色池",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"PoolIndex\": 0,\r\n    \"UpItems\": [\r\n        \"纳西妲\",\r\n        \"瑶瑶\",\r\n        \"迪奥娜\",\r\n        \"早柚\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Setting/SetCharacterPool",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"SetCharacterPool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "配置武器池",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"UpItems\": [\r\n        \"圣显之钥\",\r\n        \"千夜浮梦\",\r\n        \"西福斯的月光\",\r\n        \"西风大剑\",\r\n        \"匣里灭辰\",\r\n        \"祭礼残章\",\r\n        \"绝弦\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Setting/SetWeaponPool",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"SetWeaponPool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "重置角色池",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/ResetCharacterPool",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"ResetCharacterPool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "重置武器池",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/ResetWeaponPool",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"ResetWeaponPool"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "重置祈愿记录",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/ResetWishRecord?memberCode=123456",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"ResetWishRecord"
+					],
+					"query": [
+						{
+							"key": "memberCode",
+							"value": "123456"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "配置服装概率",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/api/Setting/SetSkinRate?rate=100",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Setting",
+						"SetSkinRate"
+					],
+					"query": [
+						{
+							"key": "rate",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "合成单抽结果图",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Uid\":\"123456\",\r\n    \"UseSkin\":true,\r\n    \"GoodsData\": [\r\n        {\r\n            \"GoodsName\": \"刻晴\",\r\n            \"OwnedCount\": 8\r\n        }\r\n    ]\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Generate/Once?ToBase64=false&ImgWidth=1000",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Generate",
+						"Once"
+					],
+					"query": [
+						{
+							"key": "ToBase64",
+							"value": "false"
+						},
+						{
+							"key": "ImgWidth",
+							"value": "1000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "合成十连结果图",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "authorzation",
+						"value": "{{authorzation}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Uid\": \"123456\",\r\n    \"UseSkin\": true,\r\n    \"GoodsData\": [\r\n        {\r\n            \"GoodsName\": \"刻晴\",\r\n            \"OwnedCount\": 1\r\n        },\r\n        {\r\n            \"GoodsName\": \"刻晴\",\r\n            \"OwnedCount\": 2\r\n        },\r\n        {\r\n            \"GoodsName\": \"雾切之回光\",\r\n            \"OwnedCount\": 1\r\n        },\r\n        {\r\n            \"GoodsName\": \"祭礼弓\",\r\n            \"OwnedCount\": 2\r\n        },\r\n        {\r\n            \"GoodsName\": \"冷刃\",\r\n            \"OwnedCount\": 2\r\n        },\r\n        {\r\n            \"GoodsName\": \"黑缨枪\",\r\n            \"OwnedCount\": 2\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/Generate/Ten?ToBase64=false&ImgWidth=1000",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"Generate",
+						"Ten"
+					],
+					"query": [
+						{
+							"key": "ToBase64",
+							"value": "false"
+						},
+						{
+							"key": "ImgWidth",
+							"value": "1000"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

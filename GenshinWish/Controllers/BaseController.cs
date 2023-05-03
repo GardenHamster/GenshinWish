@@ -85,9 +85,11 @@ namespace GenshinWish.Controllers
         /// <param name="generateData"></param>
         /// <param name="SortRecords"></param>
         /// <param name="authorizeDto"></param>
+        /// <param name="toBase64"></param>
+        /// <param name="imgWidth"></param>
         /// <returns></returns>
         [NonAction]
-        public ApiGenerateResult CreateGenerateResult(GenerateDataDto generateData, WishRecordBO[] SortRecords, AuthorizeDto authorizeDto)
+        public ApiGenerateResult CreateGenerateResult(GenerateDataDto generateData, WishRecordBO[] SortRecords, AuthorizeDto authorizeDto, bool toBase64, int imgWidth)
         {
             ApiGenerateResult apiResult = new ApiGenerateResult();
             apiResult.WishCount = SortRecords.Count();
@@ -97,13 +99,13 @@ namespace GenshinWish.Controllers
             apiResult.Star3Goods = SortRecords.Where(m => m.GoodsItem.RareType == RareType.三星).ToArray().ToGoodsVO();
             using Bitmap wishImage = CreateWishImg(SortRecords, generateData.UseSkin, generateData.Uid);
 
-            if (generateData.ToBase64)
+            if (toBase64)
             {
                 apiResult.ImgBase64 = ImageHelper.ToBase64(wishImage);
             }
             else
             {
-                FileInfo fileInfo = ImageHelper.saveImageToJpg(wishImage, FilePath.getImgSavePath(), generateData.ImgWidth);
+                FileInfo fileInfo = ImageHelper.saveImageToJpg(wishImage, FilePath.getImgSavePath(), imgWidth);
                 apiResult.ImgPath = Path.Combine(fileInfo.Directory.Parent.Name, fileInfo.Directory.Name, fileInfo.Name);
                 apiResult.ImgHttpUrl = ApiConfig.ImgHttpUrl.Replace("{imgPath}", $"{fileInfo.Directory.Parent.Name}/{fileInfo.Directory.Name}/{fileInfo.Name}");
                 apiResult.ImgSize = fileInfo.Length;

@@ -37,63 +37,19 @@ namespace GenshinWish.Controllers
         }
 
         /// <summary>
-        /// 定轨武器
-        /// </summary>
-        /// <param name="authDto"></param>
-        /// <param name="memberCode"></param>
-        /// <param name="goodsName"></param>
-        /// <param name="memberName"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [HttpPost]
-        [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult SetMemberAssign([FromForm] AuthorizeDto authDto, string memberCode, string goodsName, string memberName = "")
-        {
-            try
-            {
-                int poolIndex = 0;
-                CheckNullParam(memberCode, goodsName);
-                AuthorizePO authorizePO = authDto.Authorize;
-                GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName.Trim());
-                if (goodsInfo == null) return ApiResult.GoodsNotFound;
-
-                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
-                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
-                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
-                if (upItem == null) return ApiResult.PoolNotConfigured;
-
-                MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
-                if (upItem.Star5UpItems.Where(o => o.GoodsID == goodsInfo.Id).Any() == false) return ApiResult.AssignNotFound;
-                memberService.AssignWeapon(memberInfo, goodsInfo.Id);
-                return ApiResult.Success();
-            }
-            catch (BaseException ex)
-            {
-                LogHelper.Info(ex);
-                return ApiResult.Error(ex);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error(ex);
-                return ApiResult.ServerError;
-            }
-        }
-
-
-        /// <summary>
         /// 获取成员定轨信息
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <param name="memberCode"></param>
         /// <returns></returns>
         [HttpGet]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult GetMemberAssign([FromForm] AuthorizeDto authDto, string memberCode)
+        public ApiResult GetMemberAssign([FromForm] AuthorizeDto authorizeDto, string memberCode)
         {
             try
             {
                 CheckNullParam(memberCode);
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null || memberInfo.AssignId == 0) return ApiResult.Success("未找到定轨信息");
                 GoodsPO goodsInfo = goodsService.GetGoodsById(memberInfo.AssignId);
@@ -119,29 +75,73 @@ namespace GenshinWish.Controllers
             }
         }
 
+        /// <summary>
+        /// 定轨武器
+        /// </summary>
+        /// <param name="authorizeDto"></param>
+        /// <param name="memberCode"></param>
+        /// <param name="goodsName"></param>
+        /// <param name="memberName"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [TypeFilter(typeof(AuthorizeAttribute))]
+        public ApiResult SetMemberAssign([FromForm] AuthorizeDto authorizeDto, string memberCode, string goodsName, string memberName = "")
+        {
+            try
+            {
+                int poolIndex = 0;
+                CheckNullParam(memberCode, goodsName);
+                AuthorizePO authorizePO = authorizeDto.Authorize;
+                GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName.Trim());
+                if (goodsInfo == null) return ApiResult.GoodsNotFound;
+
+                Dictionary<int, UpItemBO> upItemDic = goodsService.LoadWeaponPool(authorizePO.Id);
+                UpItemBO upItem = upItemDic.ContainsKey(poolIndex) ? upItemDic[poolIndex] : null;
+                if (upItem == null) upItem = DefaultPool.WeaponPools.ContainsKey(poolIndex) ? DefaultPool.WeaponPools[poolIndex] : null;
+                if (upItem == null) return ApiResult.PoolNotConfigured;
+
+                MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
+                if (upItem.Star5UpItems.Where(o => o.GoodsID == goodsInfo.Id).Any() == false) return ApiResult.AssignNotFound;
+                memberService.AssignWeapon(memberInfo, goodsInfo.Id);
+                return ApiResult.Success();
+            }
+            catch (BaseException ex)
+            {
+                LogHelper.Info(ex);
+                return ApiResult.Error(ex);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error(ex);
+                return ApiResult.ServerError;
+            }
+        }
 
         /// <summary>
         /// 设定角色池
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <param name="poolDto"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult SetCharacterPool([FromForm] AuthorizeDto authDto, [FromBody] CharacterPoolDto poolDto)
+        public ApiResult SetCharacterPool([FromForm] AuthorizeDto authorizeDto, [FromBody] CharacterPoolDto poolDto)
         {
             try
             {
                 if (poolDto.PoolIndex < 0 || poolDto.PoolIndex > 10) throw new ParamException("参数错误");
                 if (poolDto.UpItems == null || poolDto.UpItems.Count == 0 || poolDto.UpItems.Count > 4) throw new ParamException("参数错误");
 
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 List<GoodsPO> goodsList = new List<GoodsPO>();
                 foreach (string item in poolDto.UpItems)
                 {
                     string goodsName = item.Trim();
                     GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName);
-                    if (goodsInfo == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的角色");
+                    if (goodsInfo == null || goodsInfo.GoodsType != GoodsType.角色)
+                    {
+                        return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的角色");
+                    }
                     goodsList.Add(goodsInfo);
                 }
 
@@ -173,24 +173,27 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 设定角色池
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <param name="poolDto"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult SetWeaponPool([FromForm] AuthorizeDto authDto, [FromBody] WeaponPoolDTO poolDto)
+        public ApiResult SetWeaponPool([FromForm] AuthorizeDto authorizeDto, [FromBody] WeaponPoolDTO poolDto)
         {
             try
             {
                 if (poolDto.UpItems == null || poolDto.UpItems.Count == 0 || poolDto.UpItems.Count > 7) throw new ParamException("参数错误");
 
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 List<GoodsPO> goodsList = new List<GoodsPO>();
                 foreach (string item in poolDto.UpItems)
                 {
                     string goodsName = item.Trim();
                     GoodsPO goodsInfo = goodsService.GetGoodsByName(goodsName);
-                    if (goodsInfo == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的武器");
+                    if (goodsInfo == null || goodsInfo.GoodsType != GoodsType.武器)
+                    {
+                        return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的武器");
+                    }
                     goodsList.Add(goodsInfo);
                 }
 
@@ -223,15 +226,15 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 清除一个授权码配置的所有角色池
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult ResetCharacterPool([FromForm] AuthorizeDto authDto)
+        public ApiResult ResetCharacterPool([FromForm] AuthorizeDto authorizeDto)
         {
             try
             {
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 goodsService.ClearPool(authorizePO.Id, PoolType.角色);
                 return ApiResult.Success();
             }
@@ -250,15 +253,15 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 清除一个授权码配置的所有武器池
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult ResetWeaponPool([FromForm] AuthorizeDto authDto)
+        public ApiResult ResetWeaponPool([FromForm] AuthorizeDto authorizeDto)
         {
             try
             {
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 goodsService.ClearPool(authorizePO.Id, PoolType.武器);
                 return ApiResult.Success();
             }
@@ -277,17 +280,17 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 重置一个成员的祈愿记录
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <param name="memberCode"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult ResetWishRecord([FromForm] AuthorizeDto authDto, string memberCode)
+        public ApiResult ResetWishRecord([FromForm] AuthorizeDto authorizeDto, string memberCode)
         {
             try
             {
                 DbScoped.SugarScope.BeginTran();
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 MemberPO memberInfo = memberService.GetByCode(authorizePO.Id, memberCode);
                 if (memberInfo == null) return ApiResult.Success();
                 memberGoodsService.ResetGoods(memberInfo.Id);
@@ -313,17 +316,17 @@ namespace GenshinWish.Controllers
         /// <summary>
         /// 修改一个授权码服装出现的概率
         /// </summary>
-        /// <param name="authDto"></param>
+        /// <param name="authorizeDto"></param>
         /// <param name="rate">0~100</param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute), Arguments = new object[] { PublicLimit.Yes })]
-        public ApiResult SetSkinRate([FromForm] AuthorizeDto authDto, int rate)
+        public ApiResult SetSkinRate([FromForm] AuthorizeDto authorizeDto, int rate)
         {
             try
             {
                 if (rate < 0 || rate > 100) throw new ParamException("参数错误");
-                AuthorizePO authorizePO = authDto.Authorize;
+                AuthorizePO authorizePO = authorizeDto.Authorize;
                 authorizeService.UpdateSkinRate(authorizePO.Id, rate);
                 return ApiResult.Success();
             }

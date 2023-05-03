@@ -34,10 +34,12 @@ namespace GenshinWish.Controllers
         /// </summary>
         /// <param name="authorizeDto"></param>
         /// <param name="generateData"></param>
+        /// <param name="toBase64"></param>
+        /// <param name="imgWidth"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult Once([FromForm] AuthorizeDto authorizeDto, [FromBody] GenerateDataDto generateData)
+        public ApiResult Once([FromForm] AuthorizeDto authorizeDto, [FromBody] GenerateDataDto generateData, bool toBase64 = false, int imgWidth = 0)
         {
             try
             {
@@ -49,7 +51,7 @@ namespace GenshinWish.Controllers
                 GoodsItemBO goodsItem = new GoodsItemBO(dbGoods);
                 WishRecordBO wishRecord = new WishRecordBO(goodsItem, goodsData.OwnedCount, 1);
                 WishRecordBO[] sortRecords = new WishRecordBO[] { wishRecord };
-                ApiGenerateResult generateResult = CreateGenerateResult(generateData, sortRecords, authorizeDto);
+                ApiGenerateResult generateResult = CreateGenerateResult(generateData, sortRecords, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(generateResult);
             }
             catch (BaseException ex)
@@ -69,10 +71,12 @@ namespace GenshinWish.Controllers
         /// </summary>
         /// <param name="authorizeDto"></param>
         /// <param name="generateData"></param>
+        /// <param name="toBase64"></param>
+        /// <param name="imgWidth"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AuthorizeAttribute))]
-        public ApiResult Ten([FromForm] AuthorizeDto authorizeDto, [FromBody] GenerateDataDto generateData)
+        public ApiResult Ten([FromForm] AuthorizeDto authorizeDto, [FromBody] GenerateDataDto generateData, bool toBase64 = false, int imgWidth = 0)
         {
             try
             {
@@ -103,7 +107,7 @@ namespace GenshinWish.Controllers
                 }
 
                 WishRecordBO[] sortRecords = generateService.SortRecords(wishRecords.ToArray()).Take(10).ToArray();
-                ApiGenerateResult generateResult = CreateGenerateResult(generateData, sortRecords, authorizeDto);
+                ApiGenerateResult generateResult = CreateGenerateResult(generateData, sortRecords, authorizeDto, toBase64, imgWidth);
                 return ApiResult.Success(generateResult);
             }
             catch (BaseException ex)
@@ -117,8 +121,6 @@ namespace GenshinWish.Controllers
                 return ApiResult.ServerError;
             }
         }
-
-
 
 
 
