@@ -275,7 +275,7 @@ namespace GenshinWish.Helper
                 using Image imgIcon = new Bitmap(FilePath.getYSWhiteEquipIconPath(goodsItem));
                 bgGraphics.DrawImage(imgIcon, indexX + 30, indexY + 430, 100, 100);//画武器图标
             }
-            if (goodsItem.GoodsType == GoodsType.角色 && wishRecord.OwnedCount == 0)
+            if (goodsItem.GoodsType == GoodsType.角色 && wishRecord.OwnedCount <= 1)
             {
                 using Image imgIcon = new Bitmap(FilePath.getYSSmallElementIconPath(goodsItem));
                 bgGraphics.DrawImage(imgIcon, indexX + 40, indexY + 440, 72, 72);//画元素图标

@@ -174,8 +174,8 @@ namespace GenshinWish.Service.WishService
                     memberInfo.Wpn80Surplus = 80;//八十发保底重置
                 }
 
-                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
                 records[i] = record;
+                records[i].OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
             }
 
             return records;

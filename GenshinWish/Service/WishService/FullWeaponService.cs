@@ -97,11 +97,11 @@ namespace GenshinWish.Service.WishService
                 }
                 else if (memberInfo.FullWpn10Surplus % 10 == 0)
                 {
-                    record = GetRandomItem(SingleList, upItem);//十连保底
+                    record = GetRandomItem(Floor10List, upItem);//十连保底
                 }
                 else
                 {
-                    record = GetRandomItem(Floor10List, upItem);//无保底，无低保
+                    record = GetRandomItem(SingleList, upItem);//无保底，无低保
                 }
 
                 if (record.GoodsItem.RareType == RareType.四星)
@@ -116,8 +116,8 @@ namespace GenshinWish.Service.WishService
                     memberInfo.FullWpn80Surplus = 80;//八十发保底重置
                 }
 
-                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
                 records[i] = record;
+                records[i].OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
             }
             return records;
         }

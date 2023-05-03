@@ -3,6 +3,7 @@ using GenshinWish.Models.BO;
 using GenshinWish.Models.DTO;
 using GenshinWish.Type;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,9 +30,9 @@ namespace GenshinWish.Service.WishService
         public WishRecordBO[] FilterRecords(WishRecordBO[] records)
         {
             if (records.Length <= 10) return records;
-            var star5Records = records.Where(o => o.GoodsItem.RareType == RareType.五星).ToList();
-            var star4Records = records.Where(o => o.GoodsItem.RareType == RareType.四星).GroupBy(o => o.GoodsItem.GoodsID).Select(o => o.First()).ToList();
-            var star3Records = records.Where(o => o.GoodsItem.RareType == RareType.三星).Take(10);
+            var star5Records = records.Where(o => o.GoodsItem.RareType == RareType.五星);
+            var star4Records = records.Where(o => o.GoodsItem.RareType == RareType.四星).GroupBy(o => o.GoodsItem.GoodsID).Select(o => o.OrderByDescending(m => m.OwnedCount).First());
+            var star3Records = records.Where(o => o.GoodsItem.RareType == RareType.三星).GroupBy(o => o.GoodsItem.GoodsID).Select(o => o.OrderByDescending(m => m.OwnedCount).First());
             return star5Records.Concat(star4Records).Concat(star3Records).Take(10).ToArray();
         }
 
@@ -134,13 +135,11 @@ namespace GenshinWish.Service.WishService
         /// <returns></returns>
         protected int GetOwnedCount(List<MemberGoodsBO> memberGoods, WishRecordBO[] records, WishRecordBO checkRecord)
         {
-            MemberGoodsBO ownedGood = memberGoods.Where(m => m.GoodsName == checkRecord.GoodsItem.GoodsName).FirstOrDefault();
+            MemberGoodsBO ownedGood = memberGoods.Where(m => m.GoodsId == checkRecord.GoodsItem.GoodsID).FirstOrDefault();
             int ownInDatabase = ownedGood == null ? 0 : ownedGood.Count;
-            int ownInRecord = records.Where(m => m != null && m.GoodsItem.GoodsName == checkRecord.GoodsItem.GoodsName).Count();
+            int ownInRecord = records.Where(m => m is not null && m.GoodsItem.GoodsID == checkRecord.GoodsItem.GoodsID).Count();
             return ownInDatabase + ownInRecord;
         }
-
-
 
     }
 }

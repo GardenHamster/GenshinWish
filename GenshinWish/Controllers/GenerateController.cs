@@ -47,8 +47,7 @@ namespace GenshinWish.Controllers
                 GoodsPO dbGoods = goodsService.GetGoodsByName(goodsName);
                 if (dbGoods == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的物品");
                 GoodsItemBO goodsItem = new GoodsItemBO(dbGoods);
-                int ownedCount = goodsData.OwnedCount + 1;
-                WishRecordBO wishRecord = new WishRecordBO(goodsItem, ownedCount, 1);
+                WishRecordBO wishRecord = new WishRecordBO(goodsItem, goodsData.OwnedCount, 1);
                 WishRecordBO[] sortRecords = new WishRecordBO[] { wishRecord };
                 ApiGenerateResult generateResult = CreateGenerateResult(generateData, sortRecords, authorizeDto);
                 return ApiResult.Success(generateResult);
@@ -87,8 +86,7 @@ namespace GenshinWish.Controllers
                     GoodsPO dbGoods = goodsService.GetGoodsByName(goodsName);
                     if (dbGoods == null) return new ApiResult(ResultCode.GoodsNotFound, $"找不到名为{goodsName}的物品");
                     GoodsItemBO goodsItem = new GoodsItemBO(dbGoods);
-                    int ownedCount = goodsData.OwnedCount + wishRecords.Where(o => o.GoodsItem.GoodsName == goodsName).Count();
-                    WishRecordBO wishRecord = new WishRecordBO(goodsItem, ownedCount, i + 1);
+                    WishRecordBO wishRecord = new WishRecordBO(goodsItem, goodsData.OwnedCount, 1);
                     wishRecords.Add(wishRecord);
                 }
 
@@ -97,7 +95,6 @@ namespace GenshinWish.Controllers
                 List<WishRecordBO> star3Records = wishRecords.Where(o => o.GoodsItem.RareType == RareType.三星).ToList();
                 if (wishRecords.Count > 10) throw new ParamException("最多包含十个物品");
                 if (star5Records.Count < 1 && star4Records.Count < 1) throw new ParamException("必须包含一个或多个五星或者四星物品");
-                if (star3Records.Count < 1 && wishRecords.Count >= 10) throw new ParamException("至少包含一个三星物品");
 
                 while (wishRecords.Count < 10)
                 {

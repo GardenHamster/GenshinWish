@@ -122,8 +122,14 @@ namespace GenshinWish.Controllers
         [NonAction]
         protected Bitmap CreateWishImg(WishRecordBO[] sortWishRecords, bool withSkin, string uid)
         {
-            if (sortWishRecords.Count() == 1) return DrawHelper.createWishImg(sortWishRecords.First(), withSkin, uid);
-            return DrawHelper.createWishImg(sortWishRecords, withSkin, uid);
+            if (sortWishRecords.Count() == 1)
+            {
+                return DrawHelper.createWishImg(sortWishRecords.First(), withSkin, uid);
+            }
+            else
+            {
+                return DrawHelper.createWishImg(sortWishRecords, withSkin, uid);
+            }
         }
 
     }

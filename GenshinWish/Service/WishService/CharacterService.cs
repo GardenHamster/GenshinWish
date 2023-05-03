@@ -97,11 +97,11 @@ namespace GenshinWish.Service.WishService
                 }
                 else if (memberInfo.Char20Surplus % 10 == 0)
                 {
-                    record = GetRandomItem(SingleList, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//十连保底
+                    record = GetRandomItem(Floor10List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//十连保底
                 }
                 else
                 {
-                    record = GetRandomItem(Floor10List, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//无保底，无低保
+                    record = GetRandomItem(SingleList, upItem, memberInfo.Char180Surplus, memberInfo.Char20Surplus);//无保底，无低保
                 }
                 
                 bool isUpItem = IsUpItem(upItem, record.GoodsItem);//判断是否为本期up的物品
@@ -129,8 +129,8 @@ namespace GenshinWish.Service.WishService
                     memberInfo.Char180Surplus = 180;//九十发大保底重置
                 }
 
-                record.OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
                 records[i] = record;
+                records[i].OwnedCount = GetOwnedCount(memberGoods, records, record);//统计已拥有数量
             }
             return records;
         }
