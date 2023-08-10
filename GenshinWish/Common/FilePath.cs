@@ -28,6 +28,15 @@ namespace GenshinWish.Common
         /// 背景图路径
         /// </summary>
         /// <returns></returns>
+        public static string getFontPath()
+        {
+            return Path.Combine(ApiConfig.MaterialSavePath, "Fonts", "HYWenHei-85W.ttf");
+        }
+
+        /// <summary>
+        /// 背景图路径
+        /// </summary>
+        /// <returns></returns>
         public static string getBackgroundPath()
         {
             return Path.Combine(ApiConfig.MaterialSavePath, "背景", "背景.png");

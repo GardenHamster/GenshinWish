@@ -130,7 +130,7 @@ namespace GenshinWish.Controllers
             }
             else
             {
-                return DrawHelper.createWishImg(sortWishRecords, withSkin, uid);
+                return DrawHelper.CreateWishImg(sortWishRecords, withSkin, uid);
             }
         }
 
