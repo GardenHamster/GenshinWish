@@ -11,9 +11,24 @@ namespace GenshinWish.Helper
 {
     public static class DrawHelper
     {
-        private static readonly SKTypeface Typeface = GetTypeface();
+        private const int CanvasWidth = 1920;
 
-        private static SKTypeface GetTypeface()
+        private const int CanvasHeight = 1080;
+
+        private static readonly SKTypeface Typeface = LoadTypeface();
+
+        private static readonly SKPaint TransTextPaint = new SKPaint
+        {
+            FakeBoldText = true,
+            Color = SKColors.White,
+            IsAntialias = true,
+            Style = SKPaintStyle.Fill,
+            TextAlign = SKTextAlign.Left,
+            Typeface = Typeface,
+            TextSize = 19
+        };
+
+        private static SKTypeface LoadTypeface()
         {
             try
             {
@@ -26,6 +41,11 @@ namespace GenshinWish.Helper
                 LogHelper.Error(ex);
                 return null;
             }
+        }
+
+        private static SKPaint CreatePaint(int fontSize)
+        {
+            
         }
 
         private static void DrawBackground(SKCanvas canvas, SKImageInfo imageInfo)
@@ -47,12 +67,10 @@ namespace GenshinWish.Helper
         /// <returns></returns>
         public static SKImage CreateWishImg(WishRecordBO[] records, bool useSkin, string uid)
         {
-            int canvasWidth = 1920;
-            int canvasHeight = 1080;
             int indexX = 230 + 151 * 9;
             int indexY = 228;
 
-            var imgInfo = new SKImageInfo(canvasWidth, canvasHeight);
+            var imgInfo = new SKImageInfo(CanvasWidth, CanvasHeight);
             using SKSurface surface = SKSurface.Create(imgInfo);
             using SKCanvas canvas = surface.Canvas;
 
@@ -61,7 +79,7 @@ namespace GenshinWish.Helper
             {
                 WishRecordBO wishRecord = records[i];
                 GoodsItemBO goodsItem = wishRecord.GoodsItem;
-                drawFrame(canvas, goodsItem, indexX, indexY);//画框
+                DrawFrame(canvas, goodsItem, indexX, indexY);//画框
                 drawShading(canvas, goodsItem, indexX, indexY);//画底纹
                 drawRoleOrEquip(canvas, goodsItem, indexX, indexY, useSkin);//画装备或角色
                 drawLight(canvas, goodsItem, indexX, indexY);//画光框
@@ -87,32 +105,34 @@ namespace GenshinWish.Helper
         /// <param name="withSkin"></param>
         /// <param name="uid"></param>
         /// <returns></returns>
-        public static Bitmap createWishImg(WishRecordBO wishRecord, bool withSkin, string uid)
+        public static SKImage createWishImg(WishRecordBO wishRecord, bool withSkin, string uid)
         {
-            string backImgUrl = FilePath.getBackgroundPath();
-            Bitmap bitmap = new Bitmap(backImgUrl);
-            using SKCanvas bgGraphics = SKCanvas.FromImage(bitmap);
-            GoodsItemBO goodsItem = wishRecord.GoodsItem;
+            var goodsItem = wishRecord.GoodsItem;
+            var imgInfo = new SKImageInfo(CanvasWidth, CanvasHeight);
+            using SKSurface surface = SKSurface.Create(imgInfo);
+            using SKCanvas canvas = surface.Canvas;
+
+            DrawBackground(canvas, imgInfo);
             if (goodsItem.GoodsType == GoodsType.角色)
             {
-                drawRole(bgGraphics, goodsItem, withSkin);//画角色大图
-                drawRoleIcon(bgGraphics, goodsItem);//画角色元素图标
-                drawRoleName(bgGraphics, goodsItem);//画角色名
-                drawRoleStar(bgGraphics, goodsItem);//画星星
-                drawRoleTrans(bgGraphics, wishRecord);//画转化和转化素材
+                drawRole(canvas, goodsItem, withSkin);//画角色大图
+                drawRoleIcon(canvas, goodsItem);//画角色元素图标
+                drawRoleName(canvas, goodsItem);//画角色名
+                drawRoleStar(canvas, goodsItem);//画星星
+                drawRoleTrans(canvas, wishRecord);//画转化和转化素材
             }
             if (goodsItem.GoodsType == GoodsType.武器)
             {
-                drawEquipBg(bgGraphics, goodsItem);//画装备背景
-                drawEquip(bgGraphics, goodsItem);//画装备大图
-                drawEquipIcon(bgGraphics, goodsItem);//画装备图标
-                drawEquipName(bgGraphics, goodsItem);//画装备名
-                drawEquipStar(bgGraphics, goodsItem);//画星星
-                drawEquipTrans(bgGraphics, goodsItem);//画星辉
+                drawEquipBg(canvas, goodsItem);//画装备背景
+                drawEquip(canvas, goodsItem);//画装备大图
+                drawEquipIcon(canvas, goodsItem);//画装备图标
+                drawEquipName(canvas, goodsItem);//画装备名
+                drawEquipStar(canvas, goodsItem);//画星星
+                drawEquipTrans(canvas, goodsItem);//画星辉
             }
-            drawBubbles(bgGraphics);//画泡泡
-            drawWaterMark(bgGraphics);//画水印
-            drawUID(bgGraphics, uid);//画UID
+            drawBubbles(canvas);//画泡泡
+            drawWaterMark(canvas);//画水印
+            drawUID(canvas, uid);//画UID
             return bitmap;
         }
 
@@ -144,10 +164,6 @@ namespace GenshinWish.Helper
 
         private static void drawRoleName(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-
-
-
-
             using GraphicsPath path = new GraphicsPath();
             Font nameFont = new Font(FontName, 45, FontStyle.Bold);
             StringFormat format = StringFormat.GenericTypographic;
@@ -161,16 +177,20 @@ namespace GenshinWish.Helper
 
         private static void drawRoleStar(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            int starWidth = 34;
-            int starHeight = 34;
+            int width = 34;
+            int height = 34;
             int indexX = 200;
             int indexY = 663;
-            int starCount = goodsItem.RareType.getStarCount();
-            using Image imgStar = new Bitmap(FilePath.getYSStarPath());
-            for (int i = 0; i < starCount; i++)
+            int count = goodsItem.RareType.getStarCount();
+            var starInfo = new SKImageInfo(width, height);
+            using SKBitmap originBitmap = SKBitmap.Decode(FilePath.getYSStarPath());
+            using SKBitmap drawBitmap = originBitmap.Resize(starInfo, SKFilterQuality.Low);
+            for (int i = 0; i < count; i++)
             {
-                canvas.DrawBitmap(imgStar, indexX, indexY, starWidth, starHeight);
-                indexX += starWidth + 5;
+                var source = new SKRect(0, 0, width, height);
+                var dest = new SKRect(indexX, indexY, indexX + width, indexY + height);
+                canvas.DrawBitmap(drawBitmap, source, dest);
+                indexX += width + 5;
             }
         }
 
@@ -179,40 +199,43 @@ namespace GenshinWish.Helper
             GoodsItemBO goodsItem = wishRecord.GoodsItem;
             if (goodsItem.GoodsType == GoodsType.角色 && wishRecord.OwnedCount > 1 && wishRecord.OwnedCount <= 7)
             {
-                using Image imgStarDust = new Bitmap(FilePath.getYSStarDustIconPath(goodsItem));
-                canvas.DrawBitmap(imgStarDust, 837, 917, imgStarDust.Width, imgStarDust.Height);//画星尘
-                using Image imgStarLight = new Bitmap(FilePath.getYSStarLightIconPath(goodsItem.RareType == RareType.五星 ? 10 : 2));
-                canvas.DrawBitmap(imgStarLight, 950, 917, imgStarLight.Width, imgStarLight.Height);//画星辉
-                using Font tranFont = new Font(FontName, 19, FontStyle.Regular);
-                using SolidBrush brushWatermark = new SolidBrush(Color.White);
-                canvas.DrawString("重复角色，已转化", tranFont, brushWatermark, 842, 870);
+                using SKBitmap starDustBitmap = SKBitmap.Decode(FilePath.getYSStarDustIconPath(goodsItem));
+                canvas.DrawBitmap(starDustBitmap, 837, 917);//画星尘
+                using SKBitmap starLightBitmap = SKBitmap.Decode(FilePath.getYSStarLightIconPath(goodsItem.RareType == RareType.五星 ? 10 : 2));
+                canvas.DrawBitmap(starLightBitmap, 950, 917);//画星辉
             }
             if (goodsItem.GoodsType == GoodsType.角色 && wishRecord.OwnedCount > 7)
             {
-                using Image imgStarLight = new Bitmap(FilePath.getYSStarLightIconPath(goodsItem.RareType == RareType.五星 ? 25 : 5));
-                canvas.DrawBitmap(imgStarLight, 900, 917, imgStarLight.Width, imgStarLight.Height);//画星辉
-                using Font tranFont = new Font(FontName, 19, FontStyle.Regular);
-                using SolidBrush brushWatermark = new SolidBrush(Color.White);
-                canvas.DrawString("重复角色，已转化", tranFont, brushWatermark, 842, 870);
+                using SKBitmap starLightBitmap = SKBitmap.Decode(FilePath.getYSStarLightIconPath(goodsItem.RareType == RareType.五星 ? 25 : 5));
+                canvas.DrawBitmap(starLightBitmap, 900, 917);//画星辉
             }
+            canvas.DrawText("重复角色，已转化", new SKPoint(842, 870), TransTextPaint);
         }
 
         private static void drawEquipBg(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            using Image imgBg = new Bitmap(FilePath.getYSEquipBgPath(goodsItem));
-            canvas.DrawBitmap(imgBg, 449, -17, 1114, 1114);
+            int startX = 449, startY = -17;
+            using SKBitmap bitmap = SKBitmap.Decode(FilePath.getYSEquipBgPath(goodsItem));
+            SKRect source = new SKRect(0, 0, bitmap.Width, bitmap.Height);
+            SKRect dest = new SKRect(startX, startY, startX + 1115, startY + 1115);
+            canvas.DrawBitmap(bitmap, source, dest);
         }
 
         private static void drawEquip(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            using Image imgEquip = new Bitmap(FilePath.getYSEquipImgPath(goodsItem));
-            canvas.DrawBitmap(imgEquip, 699, -75, 614, 1230);
+            int startX = 699, startY = -75;
+            using SKBitmap bitmap = SKBitmap.Decode(FilePath.getYSEquipImgPath(goodsItem));
+            SKRect source = new SKRect(0, 0, bitmap.Width, bitmap.Height);
+            SKRect dest = new SKRect(startX, startY, startX + 614, startY + 1230);
+            canvas.DrawBitmap(bitmap, source, dest);
         }
 
         private static void drawEquipIcon(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            using Image imgIcon = new Bitmap(FilePath.getYSBlackEquipIconPath(goodsItem));
-            canvas.DrawBitmap(imgIcon, 47, 512, imgIcon.Width, imgIcon.Height);
+            int startX = 47, startY = 512;
+            using SKBitmap bitmap = SKBitmap.Decode(FilePath.getYSBlackEquipIconPath(goodsItem));
+            SKRect source = new SKRect(0, 0, bitmap.Width, bitmap.Height);
+            SKRect dest = new SKRect(startX, startY, startX + bitmap.Width, startY + bitmap.Height);
         }
 
         private static void drawEquipName(SKCanvas canvas, GoodsItemBO goodsItem)
@@ -230,60 +253,69 @@ namespace GenshinWish.Helper
 
         private static void drawEquipStar(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            int starWidth = 34;
-            int starHeight = 34;
+            int width = 34;
+            int height = 34;
             int indexX = 190;
             int indexY = 643;
-            int starCount = goodsItem.RareType.getStarCount();
-            using Image imgStar = new Bitmap(FilePath.getYSStarPath());
-            for (int i = 0; i < starCount; i++)
+            int count = goodsItem.RareType.getStarCount();
+            var starInfo = new SKImageInfo(width, height);
+            using SKBitmap originBitmap = SKBitmap.Decode(FilePath.getYSStarPath());
+            using SKBitmap drawBitmap = originBitmap.Resize(starInfo, SKFilterQuality.Low);
+            for (int i = 0; i < count; i++)
             {
-                canvas.DrawBitmap(imgStar, indexX, indexY, starWidth, starHeight);
-                indexX += starWidth + 5;
+                var source = new SKRect(0, 0, width, height);
+                var dest = new SKRect(indexX, indexY, indexX + width, indexY + height);
+                canvas.DrawBitmap(drawBitmap, source, dest);
+                indexX += width + 5;
             }
         }
 
         private static void drawEquipTrans(SKCanvas canvas, GoodsItemBO goodsItem)
         {
-            using Image imgToken = new Bitmap(FilePath.getYSTokenPath(goodsItem));
-            canvas.DrawBitmap(imgToken, 1394, 485, imgToken.Width, imgToken.Height);
+            int startX = 1394, startY = 485;
+            using SKBitmap bitmap = SKBitmap.Decode(FilePath.getYSTokenPath(goodsItem));
+            SKRect source = new SKRect(0, 0, bitmap.Width, bitmap.Height);
+            SKRect dest = new SKRect(startX, startY, startX + bitmap.Width, startY + bitmap.Height);
+            canvas.DrawBitmap(bitmap, source, dest);
         }
 
         private static void drawBubbles(SKCanvas canvas)
         {
-            int randomBigCount = new Random().Next(5, 11);
-            List<Image> bigImageList = new List<Image>();
+            int bigNum = new Random().Next(5, 11);
+            List<SKBitmap> bigImages = new List<SKBitmap>();
             List<string> bigPathList = FilePath.getBubblesBigPathList();
-            foreach (var item in bigPathList) bigImageList.Add(new Bitmap(item));
-            for (int i = 0; i < randomBigCount; i++)
+            foreach (var item in bigPathList) bigImages.Add(SKBitmap.Decode(item));
+            for (int i = 0; i < bigNum; i++)
             {
                 int randomWidth = RandomHelper.getRandomBetween(50, 200);
-                int randomXIndex = RandomHelper.getRandomBetween(20, 1900);
-                int randomYIndex = RandomHelper.getRandomBetween(20, 1060);
-                Image randomImage = bigImageList[RandomHelper.getRandomBetween(0, bigImageList.Count - 1)];
+                int randomXIndex = RandomHelper.getRandomBetween(20, CanvasWidth-20);
+                int randomYIndex = RandomHelper.getRandomBetween(20, CanvasHeight-20);
+                SKBitmap randomImage = bigImages.Random();
+                SKRect source = new SKRect(0, 0, randomImage.Width, randomImage.Height);
+                SKRect dest = new SKRect(randomXIndex, randomYIndex, randomXIndex + bitmap.Width, randomYIndex + bitmap.Height);
                 canvas.DrawBitmap(randomImage, randomXIndex, randomYIndex, randomWidth, randomWidth);
             }
 
-            int randomSmallCount = new Random().Next(50, 101);
+            int smallNum = new Random().Next(50, 101);
             List<Image> smallImageList = new List<Image>();
             List<string> smallPathList = FilePath.getBubblesSmallPathList();
             foreach (var item in smallPathList) smallImageList.Add(new Bitmap(item));
-            for (int i = 0; i < randomSmallCount; i++)
+            for (int i = 0; i < smallNum; i++)
             {
                 int randomWidth = RandomHelper.getRandomBetween(5, 15);
                 int randomXIndex = RandomHelper.getRandomBetween(20, 1900);
                 int randomYIndex = RandomHelper.getRandomBetween(20, 1060);
-                Image randomImage = smallImageList[RandomHelper.getRandomBetween(0, smallImageList.Count - 1)];
+                SKBitmap randomImage = smallImageList.Random();
                 canvas.DrawBitmap(randomImage, randomXIndex, randomYIndex, randomWidth, randomWidth);
             }
 
-            foreach (var item in bigImageList) item.Dispose();
+            foreach (var item in bigImages) item.Dispose();
             foreach (var item in smallImageList) item.Dispose();
         }
 
         /*-------------------------------------------------------十连---------------------------------------------------------------------*/
 
-        private static void drawFrame(SKCanvas canvas, GoodsItemBO goodsItem, int indexX, int indexY)
+        private static void DrawFrame(SKCanvas canvas, GoodsItemBO goodsItem, int indexX, int indexY)
         {
             string imagePath = FilePath.getFrameImgPath();
             using FileStream fileStream = File.OpenRead(imagePath);
