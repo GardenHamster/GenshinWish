@@ -8,6 +8,7 @@ using GenshinWish.Timer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SqlSugar.IOC;
@@ -96,6 +97,12 @@ app.UseAuthentication();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+});
+
+app.UseStaticFiles(new StaticFileOptions()//静态文件访问配置
+{
+    RequestPath = new PathString("/img"),//对外的访问路径
+    FileProvider = new PhysicalFileProvider(ApiConfig.ImgSavePath)//指定实际物理路径
 });
 
 using (var scope = app.Services.CreateScope())
